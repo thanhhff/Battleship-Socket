@@ -1,1 +1,1 @@
-# Battleship-CSocket
+# Battleship-Socket
