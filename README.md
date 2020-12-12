@@ -1,4 +1,4 @@
-## Instructions for compiling and running
+## Battleship Game
 --------------------------------------
 
 1. Make sure your current working directory is "Battleships".
@@ -54,3 +54,6 @@ You may change the hostname and port that the server binds to and the client con
 - Xep tau
 - Choi
 - Chat
+
+
+Project Details: https://docs.google.com/spreadsheets/d/1HSZF6qKqKICdiZr15xyu5O4d8yZL-rVI9E4XqjO4kus/edit?usp=sharing
