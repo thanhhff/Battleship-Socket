@@ -26,8 +26,8 @@ public class MatchRoom {
     /**
      * Parses messages from the client that are intended for the MatchRoom.
      *
-     * @param player the player who send the message
-     * @param args the String array sent by the player
+     * player: the player who send the message
+     * args: the String array sent by the player
      */
     public void parse(Player player, String[] args) {
         if (args.length < 2 || player.getPlayerName().equals("")) {
@@ -68,7 +68,7 @@ public class MatchRoom {
      * user. This key is used for other players to identify them and send
      * requests to them.
      * 
-     * @param player player to join waiting list
+     * player: player to join waiting list
      */
     private synchronized void joinWaitingList(Player player) {
         waitingPlayerList.put(player.getOwnKey(), player);
@@ -92,8 +92,8 @@ public class MatchRoom {
      * Sends a join request, coming from a player, to a player matching the
      * given key.
      *
-     * @param player player sending the request
-     * @param key key of player being invited
+     * player: player sending the request
+     * key: key of player being invited
      */
     private synchronized void joinRequest(Player player, String key) {
         Player opponent = waitingPlayerList.get(key);
@@ -108,8 +108,8 @@ public class MatchRoom {
      * Called when a player accepts a game request from a player matching the
      * given key.
      *
-     * @param player player accepting the request
-     * @param key key of player who sent the request
+     * player: player accepting the request
+     * key: key of player who sent the request
      */
     private synchronized void acceptRequest(Player player, String key) {
         Player opponent = waitingPlayerList.get(key);
@@ -129,8 +129,8 @@ public class MatchRoom {
      * Called when a player rejects a game request from a player matching the
      * given key.
      *
-     * @param player player accepting the request
-     * @param key key of player who sent the request
+     * player: player accepting the request
+     * key: key of player who sent the request
      */
     private synchronized void rejectRequest(Player player, String key) {
         Player opponent = waitingPlayerList.get(key);
@@ -143,7 +143,7 @@ public class MatchRoom {
     /**
      * Called when a game request from a player gets cancelled.
      *
-     * @param player the player who sent and cancelled the invite
+     * player: the player who sent and cancelled the invite
      */
     private synchronized void cancelRequest(Player player) {
         Player opponent = waitingPlayerList.get(player.getRequestedGameKey());
@@ -158,7 +158,7 @@ public class MatchRoom {
     /**
      * Removes a player from any queue.
      * 
-     * @param player player to be removed
+     * player: player to be removed
      */
     public synchronized void removeWaitingPlayer(Player player) {
         waitingPlayerList.values().remove(player);
@@ -169,8 +169,8 @@ public class MatchRoom {
      * Checks if a player connected to the server already has the requested
      * name.
      *
-     * @param name desired name
-     * @return true if name taken
+     * name: desired name
+     * return true if name taken
      */
     public boolean playerNameExists(String name) {
         for (Player player : connectedPlayers) {
@@ -201,7 +201,7 @@ public class MatchRoom {
     /**
      * Adds player to the list of all connected players.
      *
-     * @param player player to be added
+     * player: player to be added
      */
     public void addPlayer(Player player) {
         if (!connectedPlayers.contains(player)) {
@@ -212,7 +212,7 @@ public class MatchRoom {
     /**
      * Removes player from the list of all connected players.
      *
-     * @param player player to be removed
+     * player: player to be removed
      */
     public void removePlayer(Player player) {
         connectedPlayers.remove(player);
