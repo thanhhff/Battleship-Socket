@@ -2,7 +2,7 @@
 ./src/model/MatchRoom.java
 ./src/model/Ship.java
 ./src/model/Board.java
-./src/model/Client.java
+./src/client/Client.java
 ./src/view/ShipView.java
 ./src/view/ExplosionAnimation.java
 ./src/view/InviteSentPane.java

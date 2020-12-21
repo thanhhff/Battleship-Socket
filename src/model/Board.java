@@ -1,6 +1,7 @@
 package model;
 
 import server.messages.MoveResponseMessage;
+import client.Client;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -28,7 +29,7 @@ public class Board implements Serializable {
     /**
      * Creates a Board with a 10x10 {@link Square} grid and 5 unplaced
      * {@link Ship}s
-     * 
+     *
      * @param ownBoard
      *            Indicates whether it is its own Board
      */
@@ -55,7 +56,7 @@ public class Board implements Serializable {
 
     /**
      * Validates a Board by checking its {@link Ship} positions are correct
-     * 
+     *
      * @param board
      *            The Board which is having its validity tested
      * @return true if the Board and its {@link Ship}s are valid(i.e. not
@@ -79,7 +80,7 @@ public class Board implements Serializable {
 
     /**
      * Checks whether the {@link Ship} positions are locked
-     * 
+     *
      * @return true if the {@link Ship} position is locked, otherwise false
      */
     public boolean isBoatPositionLocked() {
@@ -88,7 +89,7 @@ public class Board implements Serializable {
 
     /**
      * Sets the {@link Ship} positions to be locked or unlocked
-     * 
+     *
      * @param boatPositionLocked
      *            True to lock the {@link Ship} positions, false to unlock
      */
@@ -100,7 +101,7 @@ public class Board implements Serializable {
 
     /**
      * Checks whether it is its own Board
-     * 
+     *
      * @return true if it is own, otherwise false
      */
     public boolean isOwnBoard() {
@@ -109,7 +110,7 @@ public class Board implements Serializable {
 
     /**
      * Gets a {@link Square} from the Board
-     * 
+     *
      * @param x
      *            The index of the {@link Square} on the X-axis
      * @param y
@@ -123,7 +124,7 @@ public class Board implements Serializable {
     /**
      * Places a {@link Ship} on the Board with the top-left {@link Square} of
      * the {@link Ship} at the given co-ordinates
-     * 
+     *
      * @param ship
      *            The {@link Ship} to be placed on the Board
      * @param x
@@ -169,7 +170,7 @@ public class Board implements Serializable {
 
     /**
      * Picks up the {@link Ship} from the Board and clears its {@link Square}s
-     * 
+     *
      * @param ship
      *            The {@link Ship} to pick up
      */
@@ -182,7 +183,7 @@ public class Board implements Serializable {
 
     /**
      * Checks if the game is over(i.e. if all the {@link Ship}s are sunk)
-     * 
+     *
      * @return true if all {@link Ship}s are sunk, false otherwise
      */
     public boolean gameOver() {
@@ -196,7 +197,7 @@ public class Board implements Serializable {
     /**
      * Prints the Board to the console, showing the status of each
      * {@link Square}
-     * 
+     *
      * @param clean
      */
     public void printBoard(boolean clean) {
@@ -236,7 +237,7 @@ public class Board implements Serializable {
 
     /**
      * Gets all of the {@link Ship}s belonging to the Board
-     * 
+     *
      * @return an ArrayList of the {@link Ship}s from the Board (the
      *         {@link Ship}s might not be placed on the Board yet)
      */
@@ -247,7 +248,7 @@ public class Board implements Serializable {
     /**
      * Applies a move to the Board, updating the {@link Square} and sinking the
      * {@link Ship} if necessary
-     * 
+     *
      * @param move
      *            The {@link MoveResponseMessage} being applied to the Board
      */
@@ -275,7 +276,7 @@ public class Board implements Serializable {
 
     /**
      * Checks if two Boards have identical {@link Ship} positions
-     * 
+     *
      * @param board
      *            The Board which this Board is being compared against
      * @return true if the Boards have {@link Ship}s in identical positions
@@ -309,7 +310,7 @@ public class Board implements Serializable {
     /**
      * Checks if this {@link Square} is next to a {@link Ship} horizontally,
      * vertically or diagonally
-     * 
+     *
      * @param square
      *            The {@link Square} which is being checked for nearby
      *            {@link Ship}s
@@ -336,7 +337,7 @@ public class Board implements Serializable {
     /**
      * Sends a move at the provided co-ordinates to the {@link Client}'s
      * ObjectOutputStream
-     * 
+     *
      * @param x
      *            The index of the move on the X-axis
      * @param y
@@ -349,7 +350,7 @@ public class Board implements Serializable {
 
     /**
      * Adds a new PropertyChangeListener to the Board
-     * 
+     *
      * @param listener
      *            The PropertyChangeListener which is being added
      */
@@ -366,7 +367,7 @@ public class Board implements Serializable {
 
     /**
      * Gets the Board's {@link Client}
-     * 
+     *
      * @return the Board's {@link Client}
      */
     public Client getClient() {
@@ -375,7 +376,7 @@ public class Board implements Serializable {
 
     /**
      * Sets the Board's {@link Client}
-     * 
+     *
      * @param client
      *            The new {@link Client} for the Board
      */
