@@ -1,19 +1,15 @@
 package client;
 
-import server.Game;
 import server.messages.ChatMessage;
-import server.messages.MoveMessage;
 import server.messages.MoveResponseMessage;
 import server.messages.NotificationMessage;
 import view.ClientView;
 
 import model.*;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 /**
  * A Client used for communicating with the server. Contains both player's
@@ -100,7 +96,6 @@ public class Client extends Thread {
                 break;
             case NotificationMessage.BOARD_ACCEPTED:
                 view.setMessage("Board accepted. Waiting for opponent.");
-                view.stopTimer();
                 ownBoard.setBoatPositionLocked(true);
                 break;
 
@@ -115,48 +110,12 @@ public class Client extends Thread {
                 // TODO: handle joining a game that doesn't exist
                 view.addChatMessage("Game not found.");
                 break;
-            case NotificationMessage.PLACE_SHIPS:
-                // TODO: allow player to start positioning ships
-                //view.addChatMessage("Can place ships now.");
-                ownBoard.setBoatPositionLocked(false);
-                break;
             case NotificationMessage.YOUR_TURN:
-                view.stopTimer();
-                view.setTimer(Game.TURN_TIMEOUT / 1000);
                 view.setMessage("Your turn.");
                 break;
             case NotificationMessage.OPPONENTS_TURN:
-                view.stopTimer();
-                view.setTimer(Game.TURN_TIMEOUT / 1000);
                 view.addChatMessage("Opponent's turn.");
                 view.setMessage("Opponent's turn.");
-                break;
-            case NotificationMessage.GAME_WIN:
-                // TODO: inform player they have won the game
-                view.setMessage("You won.");
-                view.stopTimer();
-                view.gameOverAction("You won!");
-                break;
-            case NotificationMessage.GAME_LOSE:
-                // TODO: inform player they have lost the game
-                view.setMessage("You lost.");
-                view.stopTimer();
-                view.gameOverAction("You lost!");
-                break;
-            case NotificationMessage.TIMEOUT_WIN:
-                // TODO: inform of win due to opponent taking too long
-                view.addChatMessage("Your opponent took to long, you win!");
-                view.gameOverAction("Your opponent took to long, you win!");
-                break;
-            case NotificationMessage.TIMEOUT_LOSE:
-                // TODO: inform of loss due to taking too long
-                view.addChatMessage("You took too long, you lose!");
-                view.gameOverAction("You took too long, you lose!");
-                break;
-            case NotificationMessage.TIMEOUT_DRAW:
-                // TODO: inform that both took too long to place ships
-                view.addChatMessage("Game ended a draw.");
-                view.gameOverAction("Game ended a draw.");
                 break;
             case NotificationMessage.NOT_YOUR_TURN:
                 view.addChatMessage("It's not your turn!");
@@ -184,22 +143,6 @@ public class Client extends Thread {
                 opponentBoard.applyMove(move);
             }
         }
-        // else if (input instanceof ChatMessage) {
-        //     ChatMessage chatMessage = (ChatMessage) input;
-        //     view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
-        // }
-    }
-
-    /**
-     * Sends the {@link Board} over the {@link ObjectOutputStream}.
-     * @param board
-     *          The {@link Board} to send to the server
-     * @throws IOException
-     */
-    public void sendBoard(Board board) throws IOException {
-        out.reset();
-        out.writeObject(board);
-        out.flush();
     }
 
     /**
@@ -211,30 +154,17 @@ public class Client extends Thread {
         return view;
     }
 
-    // /**
-    //  * Sends a message to be displayed in the opponents chat window.
-    //  * @param message
-    //  *          The text of the message to be sent
-    //  * @throws IOException
-    //  */
-    // public void sendChatMessage(String message) throws IOException {
-    //     System.out.println(message);
-    //     out.writeObject(new ChatMessage(message));
-    //     out.flush();
-    // }
-
-    // /**
-    //  * Sends a move to be executed on the opponent's {@link Board}.
-    //  * @param x
-    //  *          The index of the {@link Square} on the X-axis to be hit
-    //  * @param y
-    //  *          The index of the {@link Square} on the Y-axis to be hit
-    //  * @throws IOException
-    //  */
-    // public void sendMove(int x, int y) throws IOException {
-    //     out.writeObject(new MoveMessage(x, y));
-    //     out.flush();
-    // }
+    /**
+     * Sends a message to be displayed in the opponents chat window.
+     * @param message
+     *          The text of the message to be sent
+     * @throws IOException
+     */
+    public void sendChatMessage(String message) throws IOException {
+        System.out.println(message);
+        out.writeObject(new ChatMessage(message));
+        out.flush();
+    }
 
     /**
      * Gets the opponent's name.

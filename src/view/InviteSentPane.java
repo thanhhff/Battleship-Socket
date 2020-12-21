@@ -1,6 +1,6 @@
 package view;
 
-import model.MatchRoom;
+import client.MatchRoom;
 
 import javax.swing.*;
 import java.awt.*;

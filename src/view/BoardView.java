@@ -5,12 +5,8 @@ import model.Ship;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -20,12 +16,9 @@ public class BoardView extends JPanel implements PropertyChangeListener {
 
     public static int SQUARE_WIDTH = 35;
     private static final int BOARD_SIZE = Board.BOARD_DIMENSION;
-    private SquareView hoveredSquare = null;
     private ShipView selectedShipView = null;
     private SquareView[][] squareViews;
     private ArrayList<ShipView> shipViews = new ArrayList<>();
-    private int xDistance;
-    private int yDistance;
     private Board model;
 
     /**
@@ -41,52 +34,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         if (model.isOwnBoard()) {
             addShips();
         }
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                resetHoveredSquare();
-                setHoveredSquare(e);
-                repaint();
-            }
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                updateSelectedShip(e);
-                repaint();
-            }
-        });
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                resetHoveredSquare();
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                setSelectedShipView(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                resetHoveredSquare();
-
-                if (getSelectedShip() != null) {
-                    moveSelectedShip();
-                } else {
-                    setHoveredSquare(e);
-                    // send move
-                    if (!model.isOwnBoard()) {
-                        int[] coords = translateCoordinates(e.getX(), e.getY());
-                        try {
-                            model.sendMove(coords[0], coords[1]);
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-                repaint();
-            }
-        });
     }
 
     /**
@@ -106,29 +53,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
      */
     public Board getModel() {
         return model;
-    }
-
-    /**
-     * Sets selected ship.
-     * @param e mouse event is used to get coordinates of the ship.
-     */
-    private void setSelectedShipView(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
-        if (selectedShipView != null) {
-            selectedShipView.setSelected(false);
-        }
-        if (model.isBoatPositionLocked()) {
-            return;
-        }
-        selectedShipView = getShip(x, y);
-        if (selectedShipView != null) {
-            selectedShipView.setSelected(true);
-            this.model.pickUpShip(selectedShipView.getModel());
-            xDistance = e.getX() - selectedShipView.getX();
-            yDistance = e.getY() - selectedShipView.getY();
-        }
-        updateRotateButtonState();
     }
 
     /**
@@ -155,34 +79,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         if (shouldReset) {
             selectedShipView.resetPosition();
         }
-        updateRotateButtonState();
         this.model.printBoard(true);
-    }
-
-    private void updateRotateButtonState() {
-        if (selectedShipView == null) {
-            model.getClient().getView().setRotateButtonState(false);
-        } else if (selectedShipView.getModel().getSquares().isEmpty()) {
-            model.getClient().getView().setRotateButtonState(false);
-        } else {
-            model.getClient().getView().setRotateButtonState(true);
-        }
-    }
-
-    /**
-     * Finds ship at specified coordinates (where mouse was clicked).
-     *
-     * @param x x coordinate.
-     * @param y y coordinate.
-     * @return ShipView at given x and y.
-     */
-    private ShipView getShip(int x, int y) {
-        for (ShipView shipView : shipViews) {
-            if (shipView.has(x, y)) {
-                return shipView;
-            }
-        }
-        return null;
     }
 
     public ShipView getSelectedShip() {
@@ -204,46 +101,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
         int i = x / SQUARE_WIDTH;
         int j = y / SQUARE_WIDTH;
         return i >= 0 && j >= 0 && i < 10 && j < 10 ? squareViews[i][j] : null;
-    }
-
-    /**
-     * Updates selected ship.
-     *
-     * @param e mouse event.
-     */
-    private void updateSelectedShip(MouseEvent e) {
-        ShipView selectedShipView = getSelectedShip();
-        if (selectedShipView != null) {
-            selectedShipView.setX(e.getX() - xDistance);
-            selectedShipView.setY(e.getY() - yDistance);
-        }
-    }
-
-    /**
-     * Sets hovered square on mouse hover event.
-     *
-     * @param e mouse event.
-     */
-    private void setHoveredSquare(MouseEvent e) {
-        if (model.isOwnBoard()) {
-            return;
-        }
-        int x = e.getX();
-        int y = e.getY();
-        hoveredSquare = getSquare(x, y);
-        if (hoveredSquare != null && hoveredSquare.getState() == SquareView.CLEAR) {
-            hoveredSquare.setState(SquareView.HOVER);
-        }
-    }
-
-    /**
-     * Resets hovered square.
-     */
-    private void resetHoveredSquare() {
-        if (hoveredSquare != null && hoveredSquare.getState() == SquareView.HOVER
-                && !model.isOwnBoard()) {
-            hoveredSquare.setState(SquareView.CLEAR);
-        }
     }
 
     public void addShipView(Ship ship) {
