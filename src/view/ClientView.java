@@ -13,8 +13,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+// import java.io.ObjectInputStream;
+// import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 /**
  * Created by alexstoick on 10/15/14.
@@ -29,7 +31,7 @@ public class ClientView extends JFrame {
     private MatchRoom matchRoom;
     private JLabel message;
 
-    public ClientView(ObjectOutputStream out, final ObjectInputStream in,
+    public ClientView(DataOutputStream out, final DataInputStream in,
                       final MatchRoom matchRoom) {
         chat.setModel(chatModel);
 

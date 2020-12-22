@@ -192,6 +192,7 @@ public class MatchRoom {
             matchRoomList.put(key, player.getPlayerName());
         }
         MatchRoomListMessage message = new MatchRoomListMessage(matchRoomList);
+        System.out.println("Hello");
         for (Map.Entry<String, Player> entry : waitingPlayerList.entrySet()) {
             Player player = entry.getValue();
             player.writeObject(message);

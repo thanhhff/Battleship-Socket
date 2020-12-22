@@ -8,8 +8,10 @@ import view.ClientView;
 import model.*;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+// import java.io.ObjectInputStream;
+// import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 /**
  * A Client used for communicating with the server. Contains both player's
@@ -22,8 +24,10 @@ public class Client extends Thread {
     private Board opponentBoard;
     private ClientView view;
 
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    // private ObjectOutputStream out;
+    // private ObjectInputStream in;
+    private DataOutputStream out;
+    private DataInputStream in;
 
     private String opponentName = "Player";
 
@@ -42,7 +46,7 @@ public class Client extends Thread {
      *          The {@link ObjectOutputStream} for receiving data
      */
     public Client(ClientView clientView, Board ownBoard, Board opponentBoard,
-            ObjectOutputStream out, ObjectInputStream in) {
+            DataOutputStream out, DataInputStream in) {
         this.ownBoard = ownBoard;
         this.opponentBoard = opponentBoard;
         this.view = clientView;
@@ -63,15 +67,12 @@ public class Client extends Thread {
         super.run();
         Object input;
         try {
-            while ((input = in.readObject()) != null) {
+            while ((input = in.readUTF()) != null) {
                 parseInput(input);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-
     }
 
     /**
@@ -162,7 +163,7 @@ public class Client extends Thread {
      */
     public void sendChatMessage(String message) throws IOException {
         System.out.println(message);
-        out.writeObject(new ChatMessage(message));
+        out.writeUTF(String.valueOf(new ChatMessage(message)));
         out.flush();
     }
 

@@ -22,8 +22,10 @@ import java.util.Properties;
 public class MatchRoom extends Thread {
 
     private MatchRoomView matchRoomView;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private ObjectOutputStream out2;
+    // private ObjectInputStream in;
+    private DataOutputStream out;
+    private DataInputStream in;
     private volatile Client clientModel;
     private String key = "";
     private String ownName;
@@ -55,9 +57,9 @@ public class MatchRoom extends Thread {
                 }
                 int port = Integer.parseInt(portStr);
                 Socket socket = new Socket(hostname, port);
-                out = new ObjectOutputStream(new BufferedOutputStream(
+                out = new DataOutputStream(new BufferedOutputStream(
                         socket.getOutputStream()));
-                in = new ObjectInputStream(socket.getInputStream());
+                in = new DataInputStream(socket.getInputStream());
                 out.flush();
                 connected = true;
             } catch (FileNotFoundException e) {
@@ -86,8 +88,7 @@ public class MatchRoom extends Thread {
         super.run();
         Object input;
         try {
-            while ((input = in.readObject()) != null) {
-                System.out.println(input);
+            while ((input = in.readUTF()) != null) {
                 if (clientModel != null) {
                     clientModel.parseInput(input);
                 } else {
@@ -97,9 +98,7 @@ public class MatchRoom extends Thread {
             System.out.println("stopped");
         } catch (IOException e) {
             matchRoomView.showLostConnectionError();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        }                  
     }
 
     /**
@@ -112,7 +111,7 @@ public class MatchRoom extends Thread {
      */
     public void sendJoinFriend(String key, final String name) {
         try {
-            out.writeObject(new String[]{"join", "join", key});
+            out.writeUTF(String.valueOf(new String[]{"join", "join", key}));
             out.flush();
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -133,7 +132,9 @@ public class MatchRoom extends Thread {
      */
     public void sendName(String name) {
         this.nameState = NameState.WAITING;
-        sendStringArray(new String[]{"name", name});
+        //sendStringArray(new String[]{"name", name});
+        //System.out.println();
+        sendStringArray2(new String[]{"name", name});
     }
 
 
@@ -141,7 +142,7 @@ public class MatchRoom extends Thread {
      * Sends a request to the server to join the {@link server.MatchRoom} lobby.
      */
     public void joinLobby() {
-        sendStringArray(new String[]{"join", "start"});
+        sendStringArray2(new String[]{"join", "start"});
     }
 
     /**
@@ -275,8 +276,22 @@ public class MatchRoom extends Thread {
      * @param array String array to be sent to server
      */
     public void sendStringArray(String[] array) {
+        System.out.println(array);
         try {
-            out.writeObject(array);
+            out2.writeObject(array);
+            out2.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendStringArray2(String[] array) {
+        String str = array[0];
+        for(int i = 1; i < array.length; i++){
+            str = str + " " + array[i]; 
+        }
+        try {
+            out.writeUTF(str);
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();

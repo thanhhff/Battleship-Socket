@@ -7,8 +7,10 @@ import server.messages.NotificationMessage;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+//import java.io.ObjectInputStream;
+//import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +22,7 @@ public class Player extends Thread {
     public Socket socket;
     private MatchRoom matchRoom;
     private String name = "";
-    private ObjectOutputStream out;
+    private DataOutputStream out;
     private Game game;
     private Board board;
     private HashMap<String, Player> requestList;
@@ -51,22 +53,23 @@ public class Player extends Thread {
     public void run() {
         super.run();
         try {
-            out = new ObjectOutputStream(new BufferedOutputStream(
+            out = new DataOutputStream(new BufferedOutputStream(
                     socket.getOutputStream()));
             out.flush();
-            ObjectInputStream in = new ObjectInputStream(
+            DataInputStream in = new DataInputStream(
                     socket.getInputStream());
 
             Object input;
 
-            while ((input = in.readObject()) != null) {
-                if (input instanceof String[]) {
-                    String[] array = (String[]) input;
+            while ((input = in.readUTF()) != null) {
+                //System.out.println(input.getClass().getName());
+                String[] ary = ((String)input).split(" ");
+                if (ary instanceof String[]) {
+                    //String[] array = (String[]) input;
+                    String[] array = ((String)input).split(" ");
                     int length = array.length;
-
                     if (length > 0) {
                         String message = array[0];
-
                         switch (message) {
                         case "join":
                             matchRoom.parse(this, array);
@@ -89,34 +92,6 @@ public class Player extends Thread {
                         }
                     }
                 }
-                /*
-                else if (input instanceof Board) {
-                    Board board = (Board) input;
-                    if (Board.isValid(board) && game != null) {
-                        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.BOARD_ACCEPTED);
-                        writeNotification(NotificationMessage.BOARD_ACCEPTED);
-                        this.board = board;
-                        game.checkBoards();
-                    } else if (game == null) {
-                        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NOT_IN_GAME);
-                        writeNotification(NotificationMessage.NOT_IN_GAME);
-                    } else {
-                        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.INVALID_BOARD);
-                        writeNotification(NotificationMessage.INVALID_BOARD);
-                    }
-                } else if (input instanceof MoveMessage) {
-                    if (game != null) {
-                        game.applyMove((MoveMessage) input, this);
-                    }
-                } else if (input instanceof ChatMessage) {
-                    if (game != null) {
-                        Player opponent = game.getOpponent(this);
-                        if (opponent != null) {
-                            opponent.writeObject(input);
-                        }
-                    }
-                }
-                */
             }
         } catch (IOException e) {
             if (game != null) {
@@ -127,8 +102,6 @@ public class Player extends Thread {
             matchRoom.removePlayer(this);
             System.out.println(socket.getRemoteSocketAddress().toString() +
                     " connected");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
@@ -157,7 +130,7 @@ public class Player extends Thread {
      */
     public void writeMessage(String message) {
         try {
-            out.writeObject(message);
+            out.writeUTF(message);
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -171,7 +144,8 @@ public class Player extends Thread {
      */
     public void writeObject(Object object) {
         try {
-            out.writeObject(object);
+            System.out.println("Co toi day");
+            out.writeUTF(String.valueOf(object));
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -188,9 +162,9 @@ public class Player extends Thread {
      */
     public void writeNotification(int notificationMessage, String... text) {
         try {
-            NotificationMessage nm = new NotificationMessage(
-                    notificationMessage, text);
-            out.writeObject(nm);
+            NotificationMessage nm = new NotificationMessage(notificationMessage, text);
+            //out.writeObject(nm);
+            out.writeUTF(String.valueOf(nm));
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
