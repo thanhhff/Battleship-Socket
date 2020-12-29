@@ -119,7 +119,7 @@ public class MatchRoom extends Thread {
                 public void run() {
                     inviteSentPane = new InviteSentPane(name, MatchRoom.this);
                     inviteSentPane.showPane(matchRoomView);
-                }
+                    }
             });
         } catch (IOException e) {
             e.printStackTrace();

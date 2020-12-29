@@ -95,7 +95,6 @@ public class Board implements Serializable {
      */
     public void setBoatPositionLocked(boolean boatPositionLocked) {
         this.boatPositionLocked = boatPositionLocked;
-        client.getView().setSendShipState(!boatPositionLocked);
         firePropertyChange("resetSelectedShip", null, null);
     }
 
@@ -334,19 +333,19 @@ public class Board implements Serializable {
         return (x >= 0 && x < 10 && y >= 0 && y < 10);
     }
 
-    /**
-     * Sends a move at the provided co-ordinates to the {@link Client}'s
-     * ObjectOutputStream
-     *
-     * @param x
-     *            The index of the move on the X-axis
-     * @param y
-     *            The index of the move on the Y-axis
-     * @throws IOException
-     */
-    public void sendMove(int x, int y) throws IOException {
-        client.sendMove(x, y);
-    }
+    // /**
+    //  * Sends a move at the provided co-ordinates to the {@link Client}'s
+    //  * ObjectOutputStream
+    //  *
+    //  * @param x
+    //  *            The index of the move on the X-axis
+    //  * @param y
+    //  *            The index of the move on the Y-axis
+    //  * @throws IOException
+    //  */
+    // public void sendMove(int x, int y) throws IOException {
+    //     client.sendMove(x, y);
+    // }
 
     /**
      * Adds a new PropertyChangeListener to the Board

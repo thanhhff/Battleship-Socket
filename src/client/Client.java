@@ -1,19 +1,16 @@
 package client;
 
-import server.Game;
 import server.messages.ChatMessage;
-import server.messages.MoveMessage;
 import server.messages.MoveResponseMessage;
 import server.messages.NotificationMessage;
+import server.messages.MoveMessage;
 import view.ClientView;
 
 import model.*;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 /**
  * A Client used for communicating with the server. Contains both player's
@@ -100,7 +97,6 @@ public class Client extends Thread {
                 break;
             case NotificationMessage.BOARD_ACCEPTED:
                 view.setMessage("Board accepted. Waiting for opponent.");
-                view.stopTimer();
                 ownBoard.setBoatPositionLocked(true);
                 break;
 
@@ -115,48 +111,12 @@ public class Client extends Thread {
                 // TODO: handle joining a game that doesn't exist
                 view.addChatMessage("Game not found.");
                 break;
-            case NotificationMessage.PLACE_SHIPS:
-                // TODO: allow player to start positioning ships
-                //view.addChatMessage("Can place ships now.");
-                ownBoard.setBoatPositionLocked(false);
-                break;
             case NotificationMessage.YOUR_TURN:
-                view.stopTimer();
-                view.setTimer(Game.TURN_TIMEOUT / 1000);
                 view.setMessage("Your turn.");
                 break;
             case NotificationMessage.OPPONENTS_TURN:
-                view.stopTimer();
-                view.setTimer(Game.TURN_TIMEOUT / 1000);
                 view.addChatMessage("Opponent's turn.");
                 view.setMessage("Opponent's turn.");
-                break;
-            case NotificationMessage.GAME_WIN:
-                // TODO: inform player they have won the game
-                view.setMessage("You won.");
-                view.stopTimer();
-                view.gameOverAction("You won!");
-                break;
-            case NotificationMessage.GAME_LOSE:
-                // TODO: inform player they have lost the game
-                view.setMessage("You lost.");
-                view.stopTimer();
-                view.gameOverAction("You lost!");
-                break;
-            case NotificationMessage.TIMEOUT_WIN:
-                // TODO: inform of win due to opponent taking too long
-                view.addChatMessage("Your opponent took to long, you win!");
-                view.gameOverAction("Your opponent took to long, you win!");
-                break;
-            case NotificationMessage.TIMEOUT_LOSE:
-                // TODO: inform of loss due to taking too long
-                view.addChatMessage("You took too long, you lose!");
-                view.gameOverAction("You took too long, you lose!");
-                break;
-            case NotificationMessage.TIMEOUT_DRAW:
-                // TODO: inform that both took too long to place ships
-                view.addChatMessage("Game ended a draw.");
-                view.gameOverAction("Game ended a draw.");
                 break;
             case NotificationMessage.NOT_YOUR_TURN:
                 view.addChatMessage("It's not your turn!");
