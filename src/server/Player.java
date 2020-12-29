@@ -17,7 +17,7 @@ import java.util.TimerTask;
 
 public class Player extends Thread {
 
-    private Socket socket;
+    public Socket socket;
     private MatchRoom matchRoom;
     private String name = "";
     private ObjectOutputStream out;

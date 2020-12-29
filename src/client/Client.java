@@ -184,10 +184,10 @@ public class Client extends Thread {
                 opponentBoard.applyMove(move);
             }
         }
-        // else if (input instanceof ChatMessage) {
-        //     ChatMessage chatMessage = (ChatMessage) input;
-        //     view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
-        // }
+        else if (input instanceof ChatMessage) {
+            ChatMessage chatMessage = (ChatMessage) input;
+            view.addChatMessage("<b>" + opponentName + ":</b> " + chatMessage.getMessage());
+        }
     }
 
     /**
@@ -211,30 +211,30 @@ public class Client extends Thread {
         return view;
     }
 
-    // /**
-    //  * Sends a message to be displayed in the opponents chat window.
-    //  * @param message
-    //  *          The text of the message to be sent
-    //  * @throws IOException
-    //  */
-    // public void sendChatMessage(String message) throws IOException {
-    //     System.out.println(message);
-    //     out.writeObject(new ChatMessage(message));
-    //     out.flush();
-    // }
+    /**
+     * Sends a message to be displayed in the opponents chat window.
+     * @param message
+     *          The text of the message to be sent
+     * @throws IOException
+     */
+    public void sendChatMessage(String message) throws IOException {
+        System.out.println(message);
+        out.writeObject(new ChatMessage(message));
+        out.flush();
+    }
 
-    // /**
-    //  * Sends a move to be executed on the opponent's {@link Board}.
-    //  * @param x
-    //  *          The index of the {@link Square} on the X-axis to be hit
-    //  * @param y
-    //  *          The index of the {@link Square} on the Y-axis to be hit
-    //  * @throws IOException
-    //  */
-    // public void sendMove(int x, int y) throws IOException {
-    //     out.writeObject(new MoveMessage(x, y));
-    //     out.flush();
-    // }
+    /**
+     * Sends a move to be executed on the opponent's {@link Board}.
+     * @param x
+     *          The index of the {@link Square} on the X-axis to be hit
+     * @param y
+     *          The index of the {@link Square} on the Y-axis to be hit
+     * @throws IOException
+     */
+    public void sendMove(int x, int y) throws IOException {
+        out.writeObject(new MoveMessage(x, y));
+        out.flush();
+    }
 
     /**
      * Gets the opponent's name.

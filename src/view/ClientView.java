@@ -1,7 +1,6 @@
 package view;
 
-import model.Client;
-import model.MatchRoom;
+import client.*;
 import server.Game;
 
 import javax.swing.*;
