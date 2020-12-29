@@ -30,8 +30,8 @@ public class Game {
      * name of their opponent. A timer is started, which the ships are to be
      * placed by the end of.
      *
-     * player1: a player
-     * player2: another player
+     * @param player1 a player
+     * @param player2 another player
      */
     public Game(Player player1, Player player2) {
         this.player1 = player1;
@@ -48,14 +48,14 @@ public class Game {
         player2.writeObject(placeShipsMessage);
 
         placementTimer = new Timer();
-        //placementTimer.schedule(new PlacementTimerTask(), PLACEMENT_TIMEOUT);
+        placementTimer.schedule(new PlacementTimerTask(), PLACEMENT_TIMEOUT);
     }
 
     /**
      * Returns the other player in the game who is not the specified player.
      *
-     * self: the specified player
-     * return the player playing the specified player
+     * @param self the specified player
+     * @return the player playing the specified player
      */
     public Player getOpponent(Player self) {
         if (player1 == self) {
@@ -66,18 +66,16 @@ public class Game {
 
     /**
      * Sets the game in both players to null.
-    */
+     */
     public void killGame() {
         player1.setGame(null);
         player2.setGame(null);
     }
 
-
-
     /**
      * Sets the turn to the specified player's.
      *
-     * player: the player who's turn it becomes
+     * @param player the player who's turn it becomes
      */
     public synchronized void setTurn(Player player) {
         turn = player;
@@ -90,7 +88,6 @@ public class Game {
         getOpponent(turn).writeNotification(NotificationMessage.OPPONENTS_TURN);
     }
 
-
     /**
      * Checks if both players have set valid boards. If they have, the game is
      * started.
@@ -101,8 +98,6 @@ public class Game {
             startGame();
         }
     }
-
-
 
     /**
      * Starts the game and sets the turn to a random player's.
@@ -116,13 +111,14 @@ public class Game {
         }
     }
 
-
     /**
-     * Applies a move a player has sent. Responds to the move with either a
-     * NotificationMessage stating an error, or a MoveResponseMessage.
+     * Applies a move a player has sent. Responds to the move with either
+     * a NotificationMessage stating an error, or a MoveResponseMessage.
      *
-     * server.messages.NotificationMessage server.messages.MoveResponseMessage move:
-     * the move sent by the player player: the player who sent the move
+     * @see server.messages.NotificationMessage
+     * @see server.messages.MoveResponseMessage
+     * @param move the move sent by the player
+     * @param player the player who sent the move
      */
     public synchronized void applyMove(MoveMessage move, Player player) {
         if (player != turn) {
@@ -171,9 +167,6 @@ public class Game {
         }
     }
 
-
-
-
     private class PlacementTimerTask extends TimerTask {
 
         @Override
@@ -209,5 +202,7 @@ public class Game {
                 killGame();
             }
         }
+
     }
+
 }

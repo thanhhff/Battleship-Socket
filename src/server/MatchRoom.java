@@ -67,7 +67,7 @@ public class MatchRoom {
      * Puts a key and a player into a HashMap, the key is sent back to the
      * user. This key is used for other players to identify them and send
      * requests to them.
-     *
+     * 
      * @param player player to join waiting list
      */
     private synchronized void joinWaitingList(Player player) {
@@ -157,7 +157,7 @@ public class MatchRoom {
 
     /**
      * Removes a player from any queue.
-     *
+     * 
      * @param player player to be removed
      */
     public synchronized void removeWaitingPlayer(Player player) {

@@ -31,8 +31,8 @@ public class Player extends Thread {
      * Constructs a player with a socket to connect through, and a reference
      * to the match room.
      *
-     * socket: the socket connecting to the player
-     * matchRoom: the match room the player will be placed in
+     * @param socket the socket connecting to the player
+     * @param matchRoom the match room the player will be placed in
      */
     public Player(Socket socket, MatchRoom matchRoom) {
         this.socket = socket;
@@ -88,9 +88,7 @@ public class Player extends Thread {
                             break;
                         }
                     }
-                }
-
-                else if (input instanceof Board) {
+                } else if (input instanceof Board) {
                     Board board = (Board) input;
                     if (Board.isValid(board) && game != null) {
                         System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.BOARD_ACCEPTED);
@@ -116,7 +114,6 @@ public class Player extends Thread {
                         }
                     }
                 }
-
             }
         } catch (IOException e) {
             if (game != null) {
@@ -135,7 +132,7 @@ public class Player extends Thread {
     /**
      * Sets the Game the player is in.
      *
-     * game: the game the player is in
+     * @param game the game the player is in
      */
     public void setGame(Game game) {
         this.game = game;
@@ -144,7 +141,7 @@ public class Player extends Thread {
     /**
      * Gets the name that the player has chosen to assign to themselves.
      *
-     * return the name of the player
+     * @return the name of the player
      */
     public String getPlayerName() {
         return name;
@@ -153,7 +150,7 @@ public class Player extends Thread {
     /**
      * Writes a String to the player, and flushes it.
      *
-     * param: message the message to be sent
+     * @param message the message to be sent
      */
     public void writeMessage(String message) {
         try {
@@ -167,7 +164,7 @@ public class Player extends Thread {
     /**
      * Writes an Object to the player, and flushes it.
      *
-     * param: object the Object to be sent
+     * @param object the Object to be sent
      */
     public void writeObject(Object object) {
         try {
@@ -182,9 +179,9 @@ public class Player extends Thread {
      * Writes a notification to the player, with an optional String array, and
      * flushes it.
      *
-     * see server.messages.NotificationMessage
-     * notificationMessage: the notification message constant to send
-     * text: additional information to be sent as a String array
+     * @see server.messages.NotificationMessage
+     * @param notificationMessage the notification message constant to send
+     * @param text additional information to be sent as a String array
      */
     public void writeNotification(int notificationMessage, String... text) {
         try {
@@ -200,7 +197,7 @@ public class Player extends Thread {
     /**
      * Gets the board that the player has uploaded to the server.
      *
-     * return the player's board
+     * @return the player's board
      */
     public Board getBoard() {
         return this.board;
@@ -210,7 +207,7 @@ public class Player extends Thread {
      * Sends a game request to the player, and updates the request list and the
      * requested game key of the opponent.
      *
-     * requester: the player who sent the request
+     * @param requester the player who sent the request
      */
     public synchronized void sendRequest(Player requester) {
         requestList.put(requester.getOwnKey(), requester);
@@ -224,7 +221,7 @@ public class Player extends Thread {
      * Called when the opponent accepts a request and informs the player they
      * have done so.
      *
-     * param: opponent the player who accepted the request
+     * @param opponent the player who accepted the request
      */
     public synchronized void requestAccepted(Player opponent) {
         opponent.requestList.remove(ownKey);
@@ -236,7 +233,7 @@ public class Player extends Thread {
     /**
      * Called when the opponent rejects a request and informs the player they
      * have done so.
-     * opponent: the player who rejected the request
+     * @param opponent the player who rejected the request
      */
     public synchronized void requestRejected(Player opponent) {
         opponent.requestList.remove(ownKey);
@@ -249,7 +246,7 @@ public class Player extends Thread {
      * Sets player's own unique key, used to identify them when sending and
      * receiving game requests.
      *
-     * ownKey: the player's unique key
+     * @param ownKey the player's unique key
      */
     public void setOwnKey(String ownKey) {
         this.ownKey = ownKey;
@@ -258,7 +255,7 @@ public class Player extends Thread {
     /**
      * Gets the unique key of the player.
      *
-     * return the player's unique key
+     * @return the player's unique key
      */
     public String getOwnKey() {
         return ownKey;
@@ -268,7 +265,7 @@ public class Player extends Thread {
      * Sets the requested game key to the unique key of the player an invite was
      * sent to.
      *
-     * key: key of invited player
+     * @param key key of invited player
      */
     public void setRequestedGameKey(String key) {
         this.requestedGameKey = key;
@@ -277,7 +274,7 @@ public class Player extends Thread {
     /**
      * Gets the unique key of a player that the player sent a game invite to.
      *
-     * return key of invited player
+     * @return key of invited player
      */
     public String getRequestedGameKey() {
         return requestedGameKey;
@@ -303,4 +300,5 @@ public class Player extends Thread {
             game.killGame();
         }
     }
+
 }
