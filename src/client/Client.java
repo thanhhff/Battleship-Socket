@@ -88,6 +88,8 @@ public class Client extends Thread {
     public void parseInput(Object input) {
         if (input instanceof NotificationMessage) {
             NotificationMessage n = (NotificationMessage) input;
+            System.out.println(n.getCode());
+
             switch (n.getCode()) {
             case NotificationMessage.OPPONENTS_NAME:
                 // TODO: handle receiving opponents name

@@ -59,6 +59,8 @@ public class MatchRoom extends Thread {
                         socket.getOutputStream()));
                 in = new ObjectInputStream(socket.getInputStream());
                 out.flush();
+
+                System.out.print(socket.getRemoteSocketAddress().toString() + ": ");
                 connected = true;
             } catch (FileNotFoundException e) {
                 matchRoomView.showConfigFileError();
@@ -87,7 +89,7 @@ public class MatchRoom extends Thread {
         Object input;
         try {
             while ((input = in.readObject()) != null) {
-                System.out.println(input);
+                // System.out.println(input);
                 if (clientModel != null) {
                     clientModel.parseInput(input);
                 } else {
@@ -182,6 +184,8 @@ public class MatchRoom extends Thread {
             });
         } else if (input instanceof NotificationMessage) {
             NotificationMessage n = (NotificationMessage) input;
+            System.out.println(n.getCode());
+
             switch (n.getCode()) {
                 case NotificationMessage.GAME_TOKEN:
                     if (n.getText().length == 1) {
