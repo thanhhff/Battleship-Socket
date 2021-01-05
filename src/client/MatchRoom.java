@@ -13,17 +13,19 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.graalvm.compiler.lir.LIRInstruction.Temp;
+
 /**
  * A MatchRoom responsible for finding player's to play a game with. Makes the
  * initial connection to the server and responsible for setting a player's name.
- * It contains an {@link java.io.ObjectOutputStream} to write to the server, and
- * and {@link java.io.ObjectInputStream} to receive objects from the server.
+*  DataOutputStream: to write to the server
+ * DataInputStream: to receive Datas from the server.
  */
 public class MatchRoom extends Thread {
 
     private MatchRoomView matchRoomView;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private DataOutputStream out;
+    private DataInputStream in;
     private volatile Client clientModel;
     private String key = "";
     private String ownName;
@@ -32,11 +34,11 @@ public class MatchRoom extends Thread {
     private InviteSentPane inviteSentPane;
 
     /**
-     * Constructs MatchRoom with a reference {@link view.MatchRoomView}. The
-     * connection information to the server is loaded from a config file and the
+     * Constructs MatchRoom with a reference link to MatchRoomView. 
+     * The connection information to the server is loaded from a config file and the
      * initial connection to the server is made.
      *
-     * @param matchRoomView the related view
+     * matchRoomView: the related view
      */
     public MatchRoom(MatchRoomView matchRoomView) {
         this.matchRoomView = matchRoomView;
@@ -55,9 +57,8 @@ public class MatchRoom extends Thread {
                 }
                 int port = Integer.parseInt(portStr);
                 Socket socket = new Socket(hostname, port);
-                out = new ObjectOutputStream(new BufferedOutputStream(
-                        socket.getOutputStream()));
-                in = new ObjectInputStream(socket.getInputStream());
+                out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                in = new DataInputStream(socket.getInputStream());
                 out.flush();
 
                 System.out.print(socket.getRemoteSocketAddress().toString() + ": ");
@@ -78,17 +79,17 @@ public class MatchRoom extends Thread {
     }
 
     /**
-     * Runs this {@link Thread}. Waits to receive input from the server, checks
-     * to see if {@link model.Client} is active, if so, parses the input to
-     * {@link model.Client}. If {@link model.Client} is null, the input is
+     * Runs this Thread. Waits to receive input from the server, checks
+     * to see if model Client is active, if so, parses the input to
+     * model Client. If model Client is null, the input is
      * parsed in this object.
      */
     @Override
     public void run() {
         super.run();
-        Object input;
+        String input;
         try {
-            while ((input = in.readObject()) != null) {
+            while ((input = in.readUTF()) != null) {
                 // System.out.println(input);
                 if (clientModel != null) {
                     clientModel.parseInput(input);
@@ -106,15 +107,15 @@ public class MatchRoom extends Thread {
 
     /**
      * Sends a game request to the player matching the given key, and displays
-     * a {@link view.InviteSentPane} informing the player that they have sent
+     * a view InviteSentPane informing the player that they have sent
      * a request and who to, and allows them to cancel it.
      *
-     * @param key key of invited player
-     * @param name name of invited player
+     * key: key of invited player
+     * name: name of invited player
      */
     public void sendJoinFriend(String key, final String name) {
         try {
-            out.writeObject(new String[]{"join", "join", key});
+            out.writeUTF(String.valueOf(new String[] { "join", key }));
             out.flush();
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -131,7 +132,7 @@ public class MatchRoom extends Thread {
     /**
      * Sends the player's desired name to the server.
      *
-     * @param name the player's desired name
+     * name: the player's desired name
      */
     public void sendName(String name) {
         this.nameState = NameState.WAITING;
@@ -140,7 +141,7 @@ public class MatchRoom extends Thread {
 
 
     /**
-     * Sends a request to the server to join the {@link server.MatchRoom} lobby.
+     * Sends a request to the server to join the server.MatchRoom} lobby.
      */
     public void joinLobby() {
         sendStringArray(new String[]{"join", "start"});
@@ -165,16 +166,16 @@ public class MatchRoom extends Thread {
 
     /**
      * Gets the state of the request of being assigned the desired name.
-     *
-     * @return state of the name request
+     * return state of the name request
      */
     public NameState getNameState() {
         return nameState;
     }
 
-    private void parseInput(Object input) {
-        if (input instanceof MatchRoomListMessage) {
-            final HashMap<String, String> matchRoomList = ((MatchRoomListMessage) input)
+    private void parseInput(String input) {
+        Object tmp = input;
+        if (tmp instanceof MatchRoomListMessage) {
+            final HashMap<String, String> matchRoomList = ((MatchRoomListMessage) tmp)
                     .getMatchRoomList();
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -182,8 +183,8 @@ public class MatchRoom extends Thread {
                     matchRoomView.updateMatchRoomList(matchRoomList);
                 }
             });
-        } else if (input instanceof NotificationMessage) {
-            NotificationMessage n = (NotificationMessage) input;
+        } else if (tmp instanceof NotificationMessage) {
+            NotificationMessage n = (NotificationMessage) tmp;
             System.out.println(n.getCode());
 
             switch (n.getCode()) {
@@ -239,10 +240,10 @@ public class MatchRoom extends Thread {
     }
 
     /**
-     * Starts the game and opens {@link view.ClientView}. Passes the information
-     * just received by the server to {@link model.Client} to be parsed.
+     * Starts the game and opens ClientView. Passes the information
+     * just received by the server to model Client to be parsed.
      *
-     * @param firstInput data to be passed to {@link model.Client}
+     * firstInput: data to be passed to Client
      */
     private void startGame(Object firstInput) {
         matchRoomView.setVisible(false);
@@ -251,18 +252,17 @@ public class MatchRoom extends Thread {
         clientModel.parseInput(firstInput);
     }
 
-    /**
+     /**
      * Returns the client's unique key.
      *
-     * @return the client's key
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * Reopens {@link view.MatchRoomView}, disposing of {@link view.ClientView},
-     * and stops {@link model.Client} from handling the input from the server.
+     * Reopens view.MatchRoomView, disposing of view.ClientView,
+     * and stops model Client from handling the input from the server.
      */
     public void reopen() {
         if (clientModel != null) {
@@ -276,11 +276,15 @@ public class MatchRoom extends Thread {
     /**
      * Writes a String array to the server and flushes it.
      *
-     * @param array String array to be sent to server
+     * array: String array to be sent to server
      */
     public void sendStringArray(String[] array) {
+        String str = array[0];
+        for (int i = 1; i < array.length; i++) {
+            str = str + " " + array[i];
+        }
         try {
-            out.writeObject(array);
+            out.writeUTF(str);
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -302,7 +306,7 @@ public class MatchRoom extends Thread {
     /**
      * Sets the player's local reference of their own name.
      *
-     * @param ownName the player's name
+     * ownName: the player's name
      */
     public void setOwnName(String ownName) {
         this.ownName = ownName;
@@ -311,7 +315,7 @@ public class MatchRoom extends Thread {
     /**
      * Returns the player's local reference of their own name.
      *
-     * @return the player's name
+     * return the player's name
      */
     public String getOwnName() {
         return ownName;

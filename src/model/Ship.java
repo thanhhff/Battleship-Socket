@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * A Ship which can be placed on the {@link Board} for the other player to fire 
- * at. It has a length of 2-5 (inclusive) {@link Square}s and must have a 
- * {@link Type}.
+ * A Ship which can be placed on the Board for the other player to fire 
+ * at. It has a length of 2-5 (inclusive) Squares and must have a 
+ * Type.
  */
 public class Ship implements Serializable {
 
@@ -18,14 +18,12 @@ public class Ship implements Serializable {
     private int health;
     private transient ShipView view;
 
-    // ////////////////////////// private int headX, headY;
 
     /**
-     * Constructs a Ship with its health and number of {@link Square}s 
-     * dependant on the {@link Type} provided. The default orientation is 
+     * Constructs a Ship with its health and number of Squares 
+     * dependant on the Type provided. The default orientation is 
      * horizontal.
-     * @param type
-     *          The type of the Ship
+     * type: The type of the Ship
      */
     public Ship(Type type) {
         this.type = type;
@@ -35,24 +33,21 @@ public class Ship implements Serializable {
     }
 
     /**
-     * Gets the length of the Ship.
-     * @return the length of the Ship (the number of {@link Square}s it covers)
+     * return the length of the Ship (the number of Squares it covers)
      */
     public int getLength() {
         return type.length;
     }
 
     /**
-     * Gets the {@link Type} of the Ship.
-     * @return the {@link Type} of the Ship
+     * return the type of the Ship
      */
     public Type getType() {
         return type;
     }
 
     /**
-     * Gets the orientation of the Ship.
-     * @return true if Ship is vertical, false if Ship is horizontal
+     * return true if Ship is vertical, false if Ship is horizontal
      */
     public boolean isVertical() {
         return vertical;
@@ -60,34 +55,30 @@ public class Ship implements Serializable {
 
     /**
      * Sets the orientation of the Ship.
-     * @param b 
-     *          true for vertical, false for horizontal
+     * b: true for vertical, false for horizontal
      */
     public void setVertical(boolean b) {
         this.vertical = b;
     }
 
     /**
-     * Gets all of the {@link Square}s that the Ship is on (its location on 
-     * the {@link Board}).
-     * @return an ArrayList of {@link Square}s
+     * Gets all of the Squares that the Ship is on (its location on the Board).
+     * return an ArrayList of Squares
      */
     public ArrayList<Square> getSquares() {
         return squares;
     }
 
     /**
-     * Adds a {@link Square} to the list of {@link Square}s the Ship is on.
-     * @param square 
-     *          The new {@link Square} to be added to the list of 
-     *          {@link Square}s
+     * Adds a Square to the list of Squares the Ship is on.
+     * square: The new Square to be added to the list of Squares
      */
     public void setSquare(Square square) {
         this.squares.add(square);
     }
 
     /**
-     * Removes all of the {@link Square}s from the Ship.
+     * Removes all of the Squares from the Ship.
      */
     public void clearSquares() {
         squares.clear();
@@ -102,7 +93,7 @@ public class Ship implements Serializable {
 
     /**
      * Gets whether the Ship is sunk or still afloat.
-     * @return true if Ship has been sunk, false otherwise
+     * true if Ship has been sunk, false otherwise
      */
     public boolean isSunk() {
         return (health == 0);
@@ -117,10 +108,9 @@ public class Ship implements Serializable {
     }
 
     /**
-     * Gets the co-ordinates of the top-left (the head) {@link Square} of the 
+     * Gets the co-ordinates of the top-left (the head) Square of the 
      * Ship which is used for positioning the Ship.
-     * @return 
-     *          the co-ordinates of the top-left (the head) {@link Square} of the Ship
+     * return the co-ordinates of the top-left (the head) Square of the Ship
      */
     public int[] getTopLeft() {
         Square firstSquare = squares.get(0);
@@ -138,10 +128,9 @@ public class Ship implements Serializable {
     }
 
     /**
-     * Sets the {@link ShipView} belonging to the Ship. This is used for displaying the 
+     * Sets the ShipView belonging to the Ship. This is used for displaying the 
      * Ship in the GUI.
-     * @param view 
-     *          The {@link ShipView} used for displaying the Ship
+     * view: The ShipView used for displaying the Ship
      */
     public void setView(ShipView view) {
         this.view = view;
@@ -160,10 +149,8 @@ public class Ship implements Serializable {
 
         /**
          * Constructs a new Type of Ship
-         * @param length
-         *          The length of the Type
-         * @param name 
-         *          The name of the Type
+         * length: The length of the Type
+         * name: The name of the Type
          */
         Type(int length, String name) {
             this.length = length;
@@ -172,8 +159,6 @@ public class Ship implements Serializable {
 
         /**
          * Gets the name of the Type
-         * @return 
-         *          the name of the Type
          */
         public String getName() {
             return name;
@@ -181,10 +166,9 @@ public class Ship implements Serializable {
     }
 
     /**
-     * Updates the list of {@link Square}s which indicate the position of the 
-     * Ship to match board's {@link Square}s
-     * @param board 
-     *          The {@link Board} which is being used to update from
+     * Updates the list of Squares which indicate the position of the 
+     * Ship to match board's Squares
+     * board: The Board which is being used to update from
      */
     public void updateSquareReferences(Board board) {
         ArrayList<Square> newSquares = new ArrayList<>();

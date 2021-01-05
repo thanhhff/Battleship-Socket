@@ -1,6 +1,6 @@
 package model;
 
-import server.messages.MoveResponseMessage;
+import server.messages.GameResponseMessage;
 import client.Client;
 
 import java.beans.PropertyChangeEvent;
@@ -10,9 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * A Battleships board containing a 10x10 {@link Square} grid and 5 {@link Ship}
+ * A Battleships board containing a 10x10 Square grid and 5 Ship
  * objects. The Board implements Serializable to allow it to be sent over
- * ObjectOutputStreams/ObjectInputStreams
+ * DataOutputStreams/DataInputStreams
  */
 public class Board implements Serializable {
     /**
@@ -27,11 +27,10 @@ public class Board implements Serializable {
     private transient ArrayList<PropertyChangeListener> changeListeners;
 
     /**
-     * Creates a Board with a 10x10 {@link Square} grid and 5 unplaced
-     * {@link Ship}s
+     * Creates a Board with a 10x10 Square grid and 5 unplaced
+     * Ships
      *
-     * @param ownBoard
-     *            Indicates whether it is its own Board
+     * ownBoard: Indicates whether it is its own Board
      */
     public Board(boolean ownBoard) {
         this.ownBoard = ownBoard;
@@ -55,12 +54,11 @@ public class Board implements Serializable {
     }
 
     /**
-     * Validates a Board by checking its {@link Ship} positions are correct
+     * Validates a Board by checking its Ship positions are correct
      *
-     * @param board
-     *            The Board which is having its validity tested
-     * @return true if the Board and its {@link Ship}s are valid(i.e. not
-     *         overlapping or over the edge of the board), otherwise false
+     * board: The Board which is having its validity tested
+     * return true if the Board and its Ships are valid(i.e. not
+     * overlapping or over the edge of the board), otherwise false
      */
     public static boolean isValid(Board board) {
         Board tempBoard = new Board(true);
@@ -79,19 +77,16 @@ public class Board implements Serializable {
     }
 
     /**
-     * Checks whether the {@link Ship} positions are locked
-     *
-     * @return true if the {@link Ship} position is locked, otherwise false
+     * Checks whether the Ship positions are locked
      */
     public boolean isBoatPositionLocked() {
         return boatPositionLocked;
     }
 
     /**
-     * Sets the {@link Ship} positions to be locked or unlocked
+     * Sets the Ship positions to be locked or unlocked
      *
-     * @param boatPositionLocked
-     *            True to lock the {@link Ship} positions, false to unlock
+     * boatPositionLocked: True to lock the Ship positions, false to unlock
      */
     public void setBoatPositionLocked(boolean boatPositionLocked) {
         this.boatPositionLocked = boatPositionLocked;
@@ -101,39 +96,30 @@ public class Board implements Serializable {
 
     /**
      * Checks whether it is its own Board
-     *
-     * @return true if it is own, otherwise false
      */
     public boolean isOwnBoard() {
         return (ownBoard);
     }
 
     /**
-     * Gets a {@link Square} from the Board
+     * Gets a Square from the Board
      *
-     * @param x
-     *            The index of the {@link Square} on the X-axis
-     * @param y
-     *            The index of the {@link Square} on the Y-axis
-     * @return The {@link Square} at the provided co-ordinates on the Board
+     * x: The index of the {@link Square} on the X-axis
+     * y: The index of the {@link Square} on the Y-axis
      */
     public Square getSquare(int x, int y) {
         return squares[x][y];
     }
 
     /**
-     * Places a {@link Ship} on the Board with the top-left {@link Square} of
-     * the {@link Ship} at the given co-ordinates
+     * Places a Ship on the Board with the top-left Square of
+     * the Ship at the given co-ordinates
      *
-     * @param ship
-     *            The {@link Ship} to be placed on the Board
-     * @param x
-     *            The index of the {@link Square} on the X-axis
-     * @param y
-     *            The index of the {@link Square} on the Y-axis
-     * @return true if the {@link Ship} has been placed on the Board, false if
-     *         it can't be placed there due to overlapping or being off the
-     *         Board
+     * ship: The Ship to be placed on the Board
+     * x: The index of the Square on the X-axis
+     * y: The index of the Square on the Y-axis
+     * return true if the Ship has been placed on the Board, false if
+     * it can't be placed there due to overlapping or being off the Board
      */
     public boolean placeShip(Ship ship, int x, int y) {
         // checks if it is within the board
@@ -169,10 +155,9 @@ public class Board implements Serializable {
     }
 
     /**
-     * Picks up the {@link Ship} from the Board and clears its {@link Square}s
+     * Picks up the Ship from the Board and clears its {@link Square}s
      *
-     * @param ship
-     *            The {@link Ship} to pick up
+     * ship: The Ship to pick up
      */
     public void pickUpShip(Ship ship) {
         for (Square s : ship.getSquares()) {
@@ -182,9 +167,7 @@ public class Board implements Serializable {
     }
 
     /**
-     * Checks if the game is over(i.e. if all the {@link Ship}s are sunk)
-     *
-     * @return true if all {@link Ship}s are sunk, false otherwise
+     * return true if all Ships are sunk, false otherwise
      */
     public boolean gameOver() {
         for (Ship ship : ships) {
@@ -195,10 +178,8 @@ public class Board implements Serializable {
     }
 
     /**
-     * Prints the Board to the console, showing the status of each
-     * {@link Square}
+     * Prints the Board to the console, showing the status of each Square
      *
-     * @param clean
      */
     public void printBoard(boolean clean) {
         for (int i = 0; i < BOARD_DIMENSION; ++i) {
@@ -236,24 +217,23 @@ public class Board implements Serializable {
     }
 
     /**
-     * Gets all of the {@link Ship}s belonging to the Board
+     * Gets all of the Ships belonging to the Board
      *
-     * @return an ArrayList of the {@link Ship}s from the Board (the
-     *         {@link Ship}s might not be placed on the Board yet)
+     * return an ArrayList of the Ships from the Board (the
+     * Ships might not be placed on the Board yet)
      */
     public ArrayList<Ship> getShips() {
         return ships;
     }
 
     /**
-     * Applies a move to the Board, updating the {@link Square} and sinking the
-     * {@link Ship} if necessary
+     * Applies a move to the Board, updating the Square and sinking the
+     * Ship if necessary
      *
-     * @param move
-     *            The {@link MoveResponseMessage} being applied to the Board
+     * gameResponse: The GameResponseMessage being applied to the Board
      */
-    public void applyMove(MoveResponseMessage move) {
-        Ship ship = move.shipSank();
+    public void applyMove(GameResponseMessage gameReponse) {
+        Ship ship = gameReponse.shipSank();
         if (ship != null) {
             ship.sink();
             if (!ownBoard) {
@@ -269,17 +249,16 @@ public class Board implements Serializable {
             // TODO: Fix me
             client.getView().addChatMessage("SUNK SHIP" + ship.toString());
         } else {
-            Square square = getSquare(move.getX(), move.getY());
-            square.update(move.isHit(), null);
+            Square square = getSquare(gameReponse.getX(), gameReponse.getY());
+            square.update(gameReponse.isHit(), null);
         }
     }
 
     /**
-     * Checks if two Boards have identical {@link Ship} positions
+     * Checks if two Boards have identical Ship positions
      *
-     * @param board
-     *            The Board which this Board is being compared against
-     * @return true if the Boards have {@link Ship}s in identical positions
+     * board: The Board which this Board is being compared against
+     * return true if the Boards have Ships in identical positions
      */
     public boolean shipPlacementEquals(Board board) {
         for (int y = 0; y < BOARD_DIMENSION; ++y) {
@@ -308,14 +287,11 @@ public class Board implements Serializable {
     }
 
     /**
-     * Checks if this {@link Square} is next to a {@link Ship} horizontally,
+     * Checks if this Square is next to a Ship horizontally,
      * vertically or diagonally
      *
-     * @param square
-     *            The {@link Square} which is being checked for nearby
-     *            {@link Ship}s
-     * @return true if there is a {@link Ship} next to this {@link Square},
-     *         false otherwise
+     * square: The Square which is being checked for nearby Ships
+     * return true if there is a Ship next to this Square, false otherwise
      */
     public boolean isSquareNearShip(Square square) {
         for (int x = square.getX() - 1; x <= square.getX() + 1; x++) {
@@ -335,50 +311,45 @@ public class Board implements Serializable {
     }
 
     /**
-     * Sends a move at the provided co-ordinates to the {@link Client}'s
-     * ObjectOutputStream
+     * Sends a move at the provided co-ordinates to the Client's DataOutputStream
      *
-     * @param x
-     *            The index of the move on the X-axis
-     * @param y
-     *            The index of the move on the Y-axis
-     * @throws IOException
+     * x: The index of the move on the X-axis
+     * y: The index of the move on the Y-axis
+     * 
      */
-    public void sendMove(int x, int y) throws IOException {
-        client.sendMove(x, y);
+    public void sendCoordinates(int x, int y) throws IOException {
+        client.sendCoordinates(x, y);
     }
 
     /**
      * Adds a new PropertyChangeListener to the Board
      *
-     * @param listener
-     *            The PropertyChangeListener which is being added
+     * listener:The PropertyChangeListener which is being added
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         changeListeners.add(listener);
     }
 
     /**
-     * Fires a PropertyChangeEvent when a {@link Ship} is rotated
+     * Fires a PropertyChangeEvent when a Ship is rotated
      */
     public void selectedShipRotated() {
         firePropertyChange("rotateSelectedShip", null, null);
     }
 
     /**
-     * Gets the Board's {@link Client}
+     * Gets the Board's Client
      *
-     * @return the Board's {@link Client}
+     * return the Board's Client
      */
     public Client getClient() {
         return client;
     }
 
     /**
-     * Sets the Board's {@link Client}
+     * Sets the Board's Client
      *
-     * @param client
-     *            The new {@link Client} for the Board
+     * client: The new Client for the Board
      */
     public void setClient(Client client) {
         this.client = client;

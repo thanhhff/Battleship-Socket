@@ -3,8 +3,8 @@ package server;
 import model.Board;
 import model.Ship;
 import model.Square;
-import server.messages.MoveMessage;
-import server.messages.MoveResponseMessage;
+import server.messages.CoordinatesMessage;
+import server.messages.GameResponseMessage;
 import server.messages.NotificationMessage;
 
 import java.util.Random;
@@ -30,8 +30,8 @@ public class Game {
      * name of their opponent. A timer is started, which the ships are to be
      * placed by the end of.
      *
-     * @param player1 a player
-     * @param player2 another player
+     * player1: a player
+     * player2: another player
      */
     public Game(Player player1, Player player2) {
         this.player1 = player1;
@@ -51,11 +51,11 @@ public class Game {
         placementTimer.schedule(new PlacementTimerTask(), PLACEMENT_TIMEOUT);
     }
 
-    /**
+     /**
      * Returns the other player in the game who is not the specified player.
      *
-     * @param self the specified player
-     * @return the player playing the specified player
+     * self: the specified player
+     * return the player playing the specified player
      */
     public Player getOpponent(Player self) {
         if (player1 == self) {
@@ -75,7 +75,7 @@ public class Game {
     /**
      * Sets the turn to the specified player's.
      *
-     * @param player the player who's turn it becomes
+     * player: the player who's turn it becomes
      */
     public synchronized void setTurn(Player player) {
         turn = player;
@@ -112,22 +112,20 @@ public class Game {
     }
 
     /**
-     * Applies a move a player has sent. Responds to the move with either
-     * a NotificationMessage stating an error, or a MoveResponseMessage.
+     * Applies a coordinates a player has sent. Responds to the coordinates with either
+     * a NotificationMessage stating an error, or a GameResponseMessage.
      *
-     * @see server.messages.NotificationMessage
-     * @see server.messages.MoveResponseMessage
-     * @param move the move sent by the player
-     * @param player the player who sent the move
+     * coordinate: the x,y sent by the player
+     * player: the player who sent the move
      */
-    public synchronized void applyMove(MoveMessage move, Player player) {
+    public synchronized void applyMove(CoordinatesMessage coordinates, Player player) {
         if (player != turn) {
             System.out.println(player.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NOT_YOUR_TURN);
             player.writeNotification(NotificationMessage.NOT_YOUR_TURN);
             return;
         }
-        int x = move.getX();
-        int y = move.getY();
+        int x = coordinates.getX();
+        int y = coordinates.getY();
         int max = Board.BOARD_DIMENSION;
 
         System.out.println(player.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.SHOT + " " + x + "," + y);
@@ -144,13 +142,13 @@ public class Game {
             }
             boolean hit = square.guess();
             Ship ship = square.getShip();
-            MoveResponseMessage response;
+            GameResponseMessage response;
             if (ship != null && ship.isSunk()) {
-                response = new MoveResponseMessage(x, y, ship, true, false);
+                response = new GameResponseMessage(x, y, ship, true, false);
             } else {
-                response = new MoveResponseMessage(x, y, null, hit, false);
+                response = new GameResponseMessage(x, y, null, hit, false);
             }
-            player.writeObject(response);
+            player.writeString(String.valueOf(response));
             response.setOwnBoard(true);
             opponent.writeObject(response);
             if (opponent.getBoard().gameOver()) {

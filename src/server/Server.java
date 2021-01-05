@@ -8,7 +8,7 @@ public class Server {
     /**
      * Constructs a server that listens on a port.
      *
-     * @param port the port to listen on
+     * port: the port to listen on
      */
     public Server(int port) {
         try {

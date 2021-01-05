@@ -57,12 +57,8 @@ public class NotificationMessage implements Serializable {
     }
 
     /**
-     * Constructs a NotificationMessage with the int value of a constant
-     * representing the notification, and a String array of any length, to be
-     * sent as additional information.
-     *
-     * @param code int value of constant
-     * @param text additional information
+     * code: int value of constant
+     * text: additional information
      */
     public NotificationMessage(int code, String... text) {
         this.code = code;
@@ -70,18 +66,14 @@ public class NotificationMessage implements Serializable {
     }
 
     /**
-     * Returns the int value of the notification the object is storing.
-     *
-     * @return int value of notification
+     * return int value of notification
      */
     public int getCode() {
         return code;
     }
 
     /**
-     * Returns the String array of additional information.
-     *
-     * @return additional information
+     * return additional information
      */
     public String[] getText() {
         return text;

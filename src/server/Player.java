@@ -2,13 +2,13 @@ package server;
 
 import model.Board;
 import server.messages.ChatMessage;
-import server.messages.MoveMessage;
+import server.messages.CoordinatesMessage;
 import server.messages.NotificationMessage;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public class Player extends Thread {
     public Socket socket;
     private MatchRoom matchRoom;
     private String name = "";
-    private ObjectOutputStream out;
+    private DataOutputStream out;
     private Game game;
     private Board board;
     private HashMap<String, Player> requestList;
@@ -28,11 +28,11 @@ public class Player extends Thread {
     private String requestedGameKey;
 
     /**
-     * Constructs a player with a socket to connect through, and a reference
-     * to the match room.
+     * Constructs a player with a socket to connect through, and a reference to the
+     * match room.
      *
-     * @param socket the socket connecting to the player
-     * @param matchRoom the match room the player will be placed in
+     * socket: the socket connecting to the player matchRoom: the match room the
+     * player will be placed in
      */
     public Player(Socket socket, MatchRoom matchRoom) {
         this.socket = socket;
@@ -51,17 +51,15 @@ public class Player extends Thread {
     public void run() {
         super.run();
         try {
-            out = new ObjectOutputStream(new BufferedOutputStream(
-                    socket.getOutputStream()));
+            out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             out.flush();
-            ObjectInputStream in = new ObjectInputStream(
-                    socket.getInputStream());
+            DataInputStream in = new DataInputStream(socket.getInputStream());
 
-            Object input;
-
-            while ((input = in.readObject()) != null) {
-                if (input instanceof String[]) {
-                    String[] array = (String[]) input;
+            String input;
+            Object tmp = input;
+            while ((input = in.readUTF()) != null) {
+                if (tmp instanceof String[]) {
+                    String[] array = (String[]) tmp;
                     int length = array.length;
 
                     if (length > 0) {
@@ -72,8 +70,7 @@ public class Player extends Thread {
                             matchRoom.parse(this, array);
                             break;
                         case "name":
-                            if (length != 2 || array[1] == null ||
-                                    array[1].equals("")) {
+                            if (length != 2 || array[1] == null || array[1].equals("")) {
                                 System.out.println(socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.INVALID_NAME);
                                 writeNotification(NotificationMessage.INVALID_NAME);
                             } else if (matchRoom.playerNameExists(array[1])) {
@@ -88,8 +85,8 @@ public class Player extends Thread {
                             break;
                         }
                     }
-                } else if (input instanceof Board) {
-                    Board board = (Board) input;
+                } else if (tmp instanceof Board) {
+                    Board board = (Board) tmp;
                     if (Board.isValid(board) && game != null) {
                         System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.BOARD_ACCEPTED);
                         writeNotification(NotificationMessage.BOARD_ACCEPTED);
@@ -102,15 +99,15 @@ public class Player extends Thread {
                         System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.INVALID_BOARD);
                         writeNotification(NotificationMessage.INVALID_BOARD);
                     }
-                } else if (input instanceof MoveMessage) {
+                } else if (tmp instanceof CoordinatesMessage) {
                     if (game != null) {
-                        game.applyMove((MoveMessage) input, this);
+                        game.applyMove((CoordinatesMessage) tmp, this);
                     }
-                } else if (input instanceof ChatMessage) {
+                } else if (tmp instanceof ChatMessage) {
                     if (game != null) {
                         Player opponent = game.getOpponent(this);
                         if (opponent != null) {
-                            opponent.writeObject(input);
+                            opponent.writeMessage(String.valueOf(tmp));
                         }
                     }
                 }
@@ -122,17 +119,14 @@ public class Player extends Thread {
                 matchRoom.removeWaitingPlayer(this);
             }
             matchRoom.removePlayer(this);
-            System.out.println(socket.getRemoteSocketAddress().toString() +
-                    " connected");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println(socket.getRemoteSocketAddress().toString() + " connected");
         }
     }
 
     /**
      * Sets the Game the player is in.
      *
-     * @param game the game the player is in
+     * game: the game the player is in
      */
     public void setGame(Game game) {
         this.game = game;
@@ -141,7 +135,7 @@ public class Player extends Thread {
     /**
      * Gets the name that the player has chosen to assign to themselves.
      *
-     * @return the name of the player
+     * return the name of the player
      */
     public String getPlayerName() {
         return name;
@@ -150,44 +144,44 @@ public class Player extends Thread {
     /**
      * Writes a String to the player, and flushes it.
      *
-     * @param message the message to be sent
+     * param: message the message to be sent
      */
     public void writeMessage(String message) {
         try {
-            out.writeObject(message);
+            out.writeUTF(message);
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * Writes an Object to the player, and flushes it.
-     *
-     * @param object the Object to be sent
-     */
-    public void writeObject(Object object) {
-        try {
-            out.writeObject(object);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // /**
+    //  * Writes an Object to the player, and flushes it.
+    //  *
+    //  * @param object the Object to be sent
+    //  */
+    // public void writeObject(Object object) {
+    //     try {
+    //         out.writeObject(object);
+    //         out.flush();
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     /**
      * Writes a notification to the player, with an optional String array, and
      * flushes it.
      *
-     * @see server.messages.NotificationMessage
-     * @param notificationMessage the notification message constant to send
-     * @param text additional information to be sent as a String array
+     * see server.messages.NotificationMessage notificationMessage: the notification
+     * message constant to send text: additional information to be sent as a String
+     * array
      */
     public void writeNotification(int notificationMessage, String... text) {
         try {
             NotificationMessage nm = new NotificationMessage(
                     notificationMessage, text);
-            out.writeObject(nm);
+            out.writeUTF(String.valueOf(nm));
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -197,7 +191,7 @@ public class Player extends Thread {
     /**
      * Gets the board that the player has uploaded to the server.
      *
-     * @return the player's board
+     * return the player's board
      */
     public Board getBoard() {
         return this.board;
@@ -207,7 +201,7 @@ public class Player extends Thread {
      * Sends a game request to the player, and updates the request list and the
      * requested game key of the opponent.
      *
-     * @param requester the player who sent the request
+     * requester: the player who sent the request
      */
     public synchronized void sendRequest(Player requester) {
         requestList.put(requester.getOwnKey(), requester);
@@ -218,10 +212,10 @@ public class Player extends Thread {
     }
 
     /**
-     * Called when the opponent accepts a request and informs the player they
-     * have done so.
+     * Called when the opponent accepts a request and informs the player they have
+     * done so.
      *
-     * @param opponent the player who accepted the request
+     * param: opponent the player who accepted the request
      */
     public synchronized void requestAccepted(Player opponent) {
         opponent.requestList.remove(ownKey);
@@ -231,9 +225,8 @@ public class Player extends Thread {
     }
 
     /**
-     * Called when the opponent rejects a request and informs the player they
-     * have done so.
-     * @param opponent the player who rejected the request
+     * Called when the opponent rejects a request and informs the player they have
+     * done so. opponent: the player who rejected the request
      */
     public synchronized void requestRejected(Player opponent) {
         opponent.requestList.remove(ownKey);
@@ -246,7 +239,7 @@ public class Player extends Thread {
      * Sets player's own unique key, used to identify them when sending and
      * receiving game requests.
      *
-     * @param ownKey the player's unique key
+     * ownKey: the player's unique key
      */
     public void setOwnKey(String ownKey) {
         this.ownKey = ownKey;
@@ -255,7 +248,7 @@ public class Player extends Thread {
     /**
      * Gets the unique key of the player.
      *
-     * @return the player's unique key
+     * return the player's unique key
      */
     public String getOwnKey() {
         return ownKey;
@@ -265,16 +258,14 @@ public class Player extends Thread {
      * Sets the requested game key to the unique key of the player an invite was
      * sent to.
      *
-     * @param key key of invited player
+     * key: key of invited player
      */
     public void setRequestedGameKey(String key) {
         this.requestedGameKey = key;
     }
 
     /**
-     * Gets the unique key of a player that the player sent a game invite to.
-     *
-     * @return key of invited player
+     * return key of invited player
      */
     public String getRequestedGameKey() {
         return requestedGameKey;
