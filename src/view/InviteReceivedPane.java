@@ -16,13 +16,9 @@ public class InviteReceivedPane extends JOptionPane {
     private String key;
 
     /**
-     * Constructs InviteReceivedPane with the key of the player inviting them,
-     * the name of the player inviting them, and a reference to the
-     * {@link model.MatchRoom} object to send the response back to.
-     *
-     * @param key key of player inviting
-     * @param name name of player inviting
-     * @param matchRoom MatchRoom object to send response too
+     * key: key of player inviting
+     * name: name of player inviting
+     * matchRoom: MatchRoom object to send response too
      */
     public InviteReceivedPane(String key, String name, MatchRoom matchRoom) {
         super();
@@ -36,10 +32,7 @@ public class InviteReceivedPane extends JOptionPane {
     }
 
     /**
-     * Shows InviteReceivedPane, and informs {@link model.MatchRoom} of the
-     * user's response.
-     *
-     * @param parent the frame to display the dialog in
+     * parent: the frame to display the dialog in
      */
     public void showOptionPane(Component parent) {
         dialog = this.createDialog(parent, "Invite");

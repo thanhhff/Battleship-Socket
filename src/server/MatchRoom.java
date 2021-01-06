@@ -195,7 +195,7 @@ public class MatchRoom {
         MatchRoomListMessage message = new MatchRoomListMessage(matchRoomList);
         for (Map.Entry<String, Player> entry : waitingPlayerList.entrySet()) {
             Player player = entry.getValue();
-            player.writeObject(message);
+            player.writeMessage(String.valueOf(message));
         }
     }
 

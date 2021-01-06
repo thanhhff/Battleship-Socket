@@ -29,9 +29,8 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     private Board model;
 
     /**
-     * Constructs BoardView.
-     * @param ownBoard if true, then the board is own and ships will be added under the board for placing.
-     *                 Otherwise, ships are not added.
+     * ownBoard: if true, then the board is own and ships will be added under the board for placing.
+     * Otherwise, ships are not added.
      */
     public BoardView(boolean ownBoard) {
         this.model = new Board(ownBoard);
@@ -78,7 +77,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
                     if (!model.isOwnBoard()) {
                         int[] coords = translateCoordinates(e.getX(), e.getY());
                         try {
-                            model.sendMove(coords[0], coords[1]);
+                            model.sendCoordinates(coords[0], coords[1]);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
@@ -101,8 +100,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * Returns ship model.
-     * @return ship model.
+     * returns ship model.
      */
     public Board getModel() {
         return model;
@@ -110,7 +108,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
 
     /**
      * Sets selected ship.
-     * @param e mouse event is used to get coordinates of the ship.
+     * e: mouse event is used to get coordinates of the ship.
      */
     private void setSelectedShipView(MouseEvent e) {
         int x = e.getX();
@@ -172,9 +170,8 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     /**
      * Finds ship at specified coordinates (where mouse was clicked).
      *
-     * @param x x coordinate.
-     * @param y y coordinate.
-     * @return ShipView at given x and y.
+     * x: x coordinate.
+     * y: y coordinate.
      */
     private ShipView getShip(int x, int y) {
         for (ShipView shipView : shipViews) {
@@ -196,9 +193,8 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     /**
      * Gets square at specified coordinates (where mouse was clicked).
      *
-     * @param x x coordinate.
-     * @param y y coordinate.
-     * @return SquareView at given x and y.
+     * x: x coordinate
+     * y: y coordinate
      */
     private SquareView getSquare(int x, int y) {
         int i = x / SQUARE_WIDTH;
@@ -209,7 +205,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
     /**
      * Updates selected ship.
      *
-     * @param e mouse event.
+     * e: mouse event.
      */
     private void updateSelectedShip(MouseEvent e) {
         ShipView selectedShipView = getSelectedShip();
@@ -221,8 +217,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
 
     /**
      * Sets hovered square on mouse hover event.
-     *
-     * @param e mouse event.
      */
     private void setHoveredSquare(MouseEvent e) {
         if (model.isOwnBoard()) {
@@ -306,8 +300,6 @@ public class BoardView extends JPanel implements PropertyChangeListener {
 
     /**
      * Paints BoardView.
-     *
-     * @param g Graphics.
      */
     @Override
     protected void paintComponent(Graphics g) {

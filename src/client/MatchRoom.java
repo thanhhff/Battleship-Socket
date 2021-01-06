@@ -13,8 +13,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.graalvm.compiler.lir.LIRInstruction.Temp;
-
 /**
  * A MatchRoom responsible for finding player's to play a game with. Makes the
  * initial connection to the server and responsible for setting a player's name.

@@ -51,7 +51,7 @@ public class Client extends Thread {
     }
 
     /**
-     * Runs this {@link Thread}. Waits to receive input from the server, parses
+     * Runs this Thread. Waits to receive input from the server, parses
      * the input and executes instructions based on the input.
      */
     @Override
@@ -211,7 +211,7 @@ public class Client extends Thread {
     /**
      * Sends a move to be executed on the opponent's Board.
      * x: The index of the Square on the X-axis to be hit
-     * y: The index of the {@link Square} on the Y-axis to be hit
+     * y: The index of the Square on the Y-axis to be hit
      * 
      */
     public void sendCoordinates(int x, int y) throws IOException {

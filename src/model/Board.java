@@ -104,8 +104,8 @@ public class Board implements Serializable {
     /**
      * Gets a Square from the Board
      *
-     * x: The index of the {@link Square} on the X-axis
-     * y: The index of the {@link Square} on the Y-axis
+     * x: The index of the Square on the X-axis
+     * y: The index of the Square on the Y-axis
      */
     public Square getSquare(int x, int y) {
         return squares[x][y];

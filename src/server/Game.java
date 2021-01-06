@@ -44,8 +44,8 @@ public class Game {
                 player1.getPlayerName());
         NotificationMessage placeShipsMessage = new NotificationMessage(
                 NotificationMessage.PLACE_SHIPS);
-        player1.writeObject(placeShipsMessage);
-        player2.writeObject(placeShipsMessage);
+        player1.writeMessage(String.valueOf(placeShipsMessage));
+        player2.writeMessage(String.valueOf(placeShipsMessage));
 
         placementTimer = new Timer();
         placementTimer.schedule(new PlacementTimerTask(), PLACEMENT_TIMEOUT);
@@ -148,9 +148,9 @@ public class Game {
             } else {
                 response = new GameResponseMessage(x, y, null, hit, false);
             }
-            player.writeString(String.valueOf(response));
+            player.writeMessage(String.valueOf(response));
             response.setOwnBoard(true);
-            opponent.writeObject(response);
+            opponent.writeMessage(String.valueOf(response));
             if (opponent.getBoard().gameOver()) {
                 System.out.println(turn.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.GAME_WIN);
                 turn.writeNotification(NotificationMessage.GAME_WIN);
@@ -172,8 +172,8 @@ public class Game {
             if (player1.getBoard() == null & player2.getBoard() == null) {
                 NotificationMessage draw = new NotificationMessage(
                         NotificationMessage.TIMEOUT_DRAW);
-                player1.writeObject(draw);
-                player2.writeObject(draw);
+                player1.writeMessage(String.valueOf(draw));
+                player2.writeMessage(String.valueOf(draw));
                 killGame();
             } else if (player1.getBoard() == null) {
                 // Player1 failed to place ships in time
