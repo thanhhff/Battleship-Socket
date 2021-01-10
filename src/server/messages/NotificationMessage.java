@@ -20,6 +20,7 @@ public class NotificationMessage implements Serializable {
     public final static int TIMEOUT_LOSE = 204;
     public final static int TIMEOUT_DRAW = 205;
     public final static int OPPONENT_DISCONNECTED = 206;
+    public final static int PLAYER_CONNECTED = 207;
 
     public final static int OPPONENTS_NAME = 301;
     public final static int INVALID_NAME = 302;

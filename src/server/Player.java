@@ -40,8 +40,8 @@ public class Player extends Thread {
         matchRoom.assignKey(this);
         matchRoom.addPlayer(this);
         this.requestList = new HashMap<>();
-        System.out.println(socket.getRemoteSocketAddress().toString() +
-                " connected");
+        System.out.println(NotificationMessage.PLAYER_CONNECTED + " " + socket.getRemoteSocketAddress().toString() +
+                 " " + "connected");
     }
 
     /**
@@ -74,14 +74,14 @@ public class Player extends Thread {
                         case "name":
                             if (length != 2 || array[1] == null ||
                                     array[1].equals("")) {
-                                System.out.println(socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.INVALID_NAME);
+                                System.out.println(NotificationMessage.INVALID_NAME + " " + socket.getRemoteSocketAddress().toString());
                                 writeNotification(NotificationMessage.INVALID_NAME);
                             } else if (matchRoom.playerNameExists(array[1])) {
-                                System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NAME_TAKEN + " " + array[1]);
+                                System.out.println (NotificationMessage.NAME_TAKEN + " " + socket.getRemoteSocketAddress().toString() + " " + array[1]);
                                 writeNotification(NotificationMessage.NAME_TAKEN);
                             } else {
                                 name = array[1];
-                                System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NAME_ACCEPTED + " " + name);
+                                System.out.println (NotificationMessage.NAME_ACCEPTED + " " + socket.getRemoteSocketAddress().toString() + " " + name);
                                 writeNotification(NotificationMessage.NAME_ACCEPTED);
                                 matchRoom.sendMatchRoomList();
                             }
@@ -91,15 +91,16 @@ public class Player extends Thread {
                 } else if (input instanceof Board) {
                     Board board = (Board) input;
                     if (Board.isValid(board) && game != null) {
-                        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.BOARD_ACCEPTED);
+                        System.out.println (NotificationMessage.BOARD_ACCEPTED + " "
+                                + socket.getRemoteSocketAddress().toString() );
                         writeNotification(NotificationMessage.BOARD_ACCEPTED);
                         this.board = board;
                         game.checkBoards();
                     } else if (game == null) {
-                        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NOT_IN_GAME);
+                        System.out.println (NotificationMessage.NOT_IN_GAME + " " + socket.getRemoteSocketAddress().toString() );
                         writeNotification(NotificationMessage.NOT_IN_GAME);
                     } else {
-                        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.INVALID_BOARD);
+                        System.out.println (NotificationMessage.INVALID_BOARD + " " + socket.getRemoteSocketAddress().toString());
                         writeNotification(NotificationMessage.INVALID_BOARD);
                     }
                 } else if (input instanceof MoveMessage) {
@@ -212,7 +213,8 @@ public class Player extends Thread {
     public synchronized void sendRequest(Player requester) {
         requestList.put(requester.getOwnKey(), requester);
         requester.requestedGameKey = this.ownKey;
-        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NEW_JOIN_GAME_REQUEST);
+        System.out.println (NotificationMessage.NEW_JOIN_GAME_REQUEST + " "
+                + socket.getRemoteSocketAddress().toString() );
         writeNotification(NotificationMessage.NEW_JOIN_GAME_REQUEST,
                 requester.getOwnKey(), requester.getPlayerName());
     }
@@ -226,7 +228,7 @@ public class Player extends Thread {
     public synchronized void requestAccepted(Player opponent) {
         opponent.requestList.remove(ownKey);
         requestedGameKey = null;
-        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED);
+        System.out.println (NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED + " " + socket.getRemoteSocketAddress().toString() );
         writeNotification(NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED);
     }
 
@@ -238,7 +240,7 @@ public class Player extends Thread {
     public synchronized void requestRejected(Player opponent) {
         opponent.requestList.remove(ownKey);
         requestedGameKey = null;
-        System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.JOIN_GAME_REQUEST_REJECTED);
+        System.out.println (NotificationMessage.JOIN_GAME_REQUEST_REJECTED + " " + socket.getRemoteSocketAddress().toString());
         writeNotification(NotificationMessage.JOIN_GAME_REQUEST_REJECTED);
     }
 
@@ -295,7 +297,7 @@ public class Player extends Thread {
     public void leaveGame() {
         if (game != null) {
             Player opponent = game.getOpponent(this);
-            System.out.println (socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.OPPONENT_DISCONNECTED);
+            System.out.println (NotificationMessage.OPPONENT_DISCONNECTED + " " + socket.getRemoteSocketAddress().toString());
             opponent.writeNotification(NotificationMessage.OPPONENT_DISCONNECTED);
             game.killGame();
         }

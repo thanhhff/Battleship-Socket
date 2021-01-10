@@ -122,7 +122,8 @@ public class Game {
      */
     public synchronized void applyMove(MoveMessage move, Player player) {
         if (player != turn) {
-            System.out.println(player.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.NOT_YOUR_TURN);
+            System.out.println(NotificationMessage.NOT_YOUR_TURN + " "
+                    + player.socket.getRemoteSocketAddress().toString() );
             player.writeNotification(NotificationMessage.NOT_YOUR_TURN);
             return;
         }
@@ -130,7 +131,8 @@ public class Game {
         int y = move.getY();
         int max = Board.BOARD_DIMENSION;
 
-        System.out.println(player.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.SHOT + " " + x + "," + y);
+        System.out.println(NotificationMessage.SHOT + " "
+                + player.socket.getRemoteSocketAddress().toString() + " " + x + " " + y);
 
         if (x < 0 || x >= max || y < 0 || y >= max) {
             player.writeNotification(NotificationMessage.INVALID_MOVE);
@@ -138,7 +140,8 @@ public class Game {
             Player opponent = getOpponent(player);
             Square square = opponent.getBoard().getSquare(x, y);
             if (square.isGuessed()) {
-                System.out.println(player.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.REPEATED_MOVE);
+                System.out.println(NotificationMessage.REPEATED_MOVE + " "
+                        + player.socket.getRemoteSocketAddress().toString());
                 player.writeNotification(NotificationMessage.REPEATED_MOVE);
                 return;
             }
@@ -154,9 +157,11 @@ public class Game {
             response.setOwnBoard(true);
             opponent.writeObject(response);
             if (opponent.getBoard().gameOver()) {
-                System.out.println(turn.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.GAME_WIN);
+                System.out.println(NotificationMessage.GAME_WIN + " "
+                        + turn.socket.getRemoteSocketAddress().toString());
                 turn.writeNotification(NotificationMessage.GAME_WIN);
-                System.out.println(opponent.socket.getRemoteSocketAddress().toString() + ": " + NotificationMessage.GAME_LOSE);
+                System.out.println(NotificationMessage.GAME_LOSE + " "
+                        + opponent.socket.getRemoteSocketAddress().toString() );
                 opponent.writeNotification(NotificationMessage.GAME_LOSE);
                 turn = null;
             } else if (hit) {
