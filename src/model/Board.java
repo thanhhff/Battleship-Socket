@@ -267,7 +267,7 @@ public class Board implements Serializable {
                 boardSquare.update(true, ship);
             }
             // TODO: Fix me
-            client.getView().addChatMessage("SUNK SHIP" + ship.toString());
+            client.getView().addChatMessage("SUNK SHIP");
         } else {
             Square square = getSquare(move.getX(), move.getY());
             square.update(move.isHit(), null);
