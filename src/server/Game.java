@@ -20,8 +20,8 @@ public class Game {
     private Timer placementTimer;
     private Timer turnTimer;
 
-    public final static int TURN_TIMEOUT = 20000;
-    public final static int PLACEMENT_TIMEOUT = 60000;
+    public final static int TURN_TIMEOUT = 60000;
+    public final static int PLACEMENT_TIMEOUT = 120000;
 
     private boolean gameStarted;
 

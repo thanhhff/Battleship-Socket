@@ -50,26 +50,27 @@ public class ClientView extends JFrame {
 
         controlPanel.add(chatScrollPane, BorderLayout.CENTER);
 
-        JPanel chatInput = new JPanel(new BorderLayout());
-        JButton sendButton = new JButton("Send");
-        chatInput.add(inputField, BorderLayout.CENTER);
-        chatInput.add(sendButton, BorderLayout.EAST);
+        // For chat
+//        JPanel chatInput = new JPanel(new BorderLayout());
+//        JButton sendButton = new JButton("Send");
+//        chatInput.add(inputField, BorderLayout.CENTER);
+//        chatInput.add(sendButton, BorderLayout.EAST);
 
-        inputField.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendChatMessage();
-            }
-        });
+//        inputField.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                sendChatMessage();
+//            }
+//        });
+//
+//        sendButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                sendChatMessage();
+//            }
+//        });
 
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendChatMessage();
-            }
-        });
-
-        controlPanel.add(chatInput, BorderLayout.SOUTH);
+//        controlPanel.add(chatInput, BorderLayout.SOUTH);
         controlPanel.setPreferredSize(new Dimension(180, 150));
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
