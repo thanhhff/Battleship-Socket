@@ -35,7 +35,7 @@ public class Player extends Thread {
      * @param matchRoom the match room the player will be placed in
      */
     public Player(Socket socket, MatchRoom matchRoom) {
-        System.out.println("<< " + socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.PLAYER_CONNECTED + " " );
+        System.out.println("<< " + socket.getRemoteSocketAddress().toString());
         this.socket = socket;
         this.matchRoom = matchRoom;
         matchRoom.assignKey(this);
