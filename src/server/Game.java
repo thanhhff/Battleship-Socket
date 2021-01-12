@@ -121,30 +121,37 @@ public class Game {
      * @param player the player who sent the move
      */
     public synchronized void applyMove(MoveMessage move, Player player) {
-        if (player != turn) {
-            System.out.println(NotificationMessage.NOT_YOUR_TURN + " "
-                    + player.socket.getRemoteSocketAddress().toString() );
-            player.writeNotification(NotificationMessage.NOT_YOUR_TURN);
-            return;
-        }
         int x = move.getX();
         int y = move.getY();
         int max = Board.BOARD_DIMENSION;
 
-        System.out.println(NotificationMessage.SHOT + " "
+        System.out.println("<< " + NotificationMessage.SHOT + " "
                 + player.socket.getRemoteSocketAddress().toString() + " " + x + " " + y);
 
+        if (player != turn) {
+            System.out.println(">> " + NotificationMessage.NOT_YOUR_TURN + " "
+                    + player.socket.getRemoteSocketAddress().toString() );
+            player.writeNotification(NotificationMessage.NOT_YOUR_TURN);
+            return;
+        }
+
         if (x < 0 || x >= max || y < 0 || y >= max) {
+            System.out.println(">> " + NotificationMessage.INVALID_MOVE + " "
+                    + player.socket.getRemoteSocketAddress().toString());
             player.writeNotification(NotificationMessage.INVALID_MOVE);
         } else {
             Player opponent = getOpponent(player);
             Square square = opponent.getBoard().getSquare(x, y);
             if (square.isGuessed()) {
-                System.out.println(NotificationMessage.REPEATED_MOVE + " "
+                System.out.println(">> " + NotificationMessage.REPEATED_MOVE + " "
                         + player.socket.getRemoteSocketAddress().toString());
                 player.writeNotification(NotificationMessage.REPEATED_MOVE);
                 return;
             }
+
+            System.out.println(">> " + NotificationMessage.SHOT + " "
+                    + opponent.socket.getRemoteSocketAddress().toString() + " " + x + " " + y);
+
             boolean hit = square.guess();
             Ship ship = square.getShip();
             MoveResponseMessage response;
@@ -157,17 +164,22 @@ public class Game {
             response.setOwnBoard(true);
             opponent.writeObject(response);
             if (opponent.getBoard().gameOver()) {
-                System.out.println(NotificationMessage.GAME_WIN + " "
+                System.out.println(">> " + NotificationMessage.GAME_WIN + " "
                         + turn.socket.getRemoteSocketAddress().toString());
                 turn.writeNotification(NotificationMessage.GAME_WIN);
-                System.out.println(NotificationMessage.GAME_LOSE + " "
+
+                System.out.println(">> " + NotificationMessage.GAME_LOSE + " "
                         + opponent.socket.getRemoteSocketAddress().toString() );
                 opponent.writeNotification(NotificationMessage.GAME_LOSE);
                 turn = null;
             } else if (hit) {
+                System.out.println("<< " + NotificationMessage.OPPONENTS_TURN + " " + opponent.socket.getRemoteSocketAddress().toString());
                 setTurn(player); // player gets another go if hit
+                System.out.println(">> " + NotificationMessage.YOUR_TURN + " " + player.socket.getRemoteSocketAddress().toString());
             } else {
+                System.out.println("<< " + NotificationMessage.YOUR_TURN + " " + opponent.socket.getRemoteSocketAddress().toString());
                 setTurn(getOpponent(player));
+                System.out.println(">> " + NotificationMessage.OPPONENTS_TURN + " " + player.socket.getRemoteSocketAddress().toString());
             }
         }
     }
