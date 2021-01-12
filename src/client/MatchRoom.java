@@ -31,6 +31,7 @@ public class MatchRoom extends Thread {
     private HashMap<String, InviteReceivedPane> inviteDialogs;
     private InviteSentPane inviteSentPane;
 
+    public String serverAddress;
     /**
      * Constructs MatchRoom with a reference {@link view.MatchRoomView}. The
      * connection information to the server is loaded from a config file and the
@@ -55,12 +56,12 @@ public class MatchRoom extends Thread {
                 }
                 int port = Integer.parseInt(portStr);
                 Socket socket = new Socket(hostname, port);
-                out = new ObjectOutputStream(new BufferedOutputStream(
-                        socket.getOutputStream()));
+                out = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                 in = new ObjectInputStream(socket.getInputStream());
                 out.flush();
 
-                System.out.print(socket.getRemoteSocketAddress().toString() + ": ");
+                serverAddress = socket.getRemoteSocketAddress().toString();
+                //System.out.print(serverAddress + ": ");
                 connected = true;
             } catch (FileNotFoundException e) {
                 matchRoomView.showConfigFileError();
@@ -78,10 +79,10 @@ public class MatchRoom extends Thread {
     }
 
     /**
-     * Runs this {@link Thread}. Waits to receive input from the server, checks
-     * to see if {@link model.Client} is active, if so, parses the input to
-     * {@link model.Client}. If {@link model.Client} is null, the input is
-     * parsed in this object.
+     * Runs this {@link Thread}. Waits to receive input from the server, checks to
+     * see if {@link model.Client} is active, if so, parses the input to
+     * {@link model.Client}. If {@link model.Client} is null, the input is parsed in
+     * this object.
      */
     @Override
     public void run() {
@@ -105,9 +106,9 @@ public class MatchRoom extends Thread {
     }
 
     /**
-     * Sends a game request to the player matching the given key, and displays
-     * a {@link view.InviteSentPane} informing the player that they have sent
-     * a request and who to, and allows them to cancel it.
+     * Sends a game request to the player matching the given key, and displays a
+     * {@link view.InviteSentPane} informing the player that they have sent a
+     * request and who to, and allows them to cancel it.
      *
      * @param key  key of invited player
      * @param name name of invited player
@@ -115,7 +116,7 @@ public class MatchRoom extends Thread {
     public void sendJoinFriend(String key, final String name) {
         try {
             System.out.println(">> " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " " + key + " " + name);
-            out.writeObject(new String[]{"join", "join", key});
+            out.writeObject(new String[] { "join", "join", key });
             out.flush();
             EventQueue.invokeLater(new Runnable() {
                 @Override
@@ -136,23 +137,22 @@ public class MatchRoom extends Thread {
      */
     public void sendName(String name) {
         this.nameState = NameState.WAITING;
-        System.out.println(">> " + NotificationMessage.NAME_REQUEST + " " + name);
-        sendStringArray(new String[]{"name", name});
+        System.out.println(">> " + NotificationMessage.NAME_REQUEST + " " +serverAddress +  " " + name);
+        sendStringArray(new String[] { "name", name });
     }
-
 
     /**
      * Sends a request to the server to join the {@link server.MatchRoom} lobby.
      */
     public void joinLobby() {
-        sendStringArray(new String[]{"join", "start"});
+        sendStringArray(new String[] { "join", "start" });
     }
 
     /**
      * Enumerations to represent the state of the player's name. The state is
-     * WAITING when they are waiting for a response from the server, ACCEPTED
-     * means the name has been accepted by the server, INVALID means the name
-     * was not a valid name, TAKEN means another player already has the name.
+     * WAITING when they are waiting for a response from the server, ACCEPTED means
+     * the name has been accepted by the server, INVALID means the name was not a
+     * valid name, TAKEN means another player already has the name.
      */
     public static enum NameState {
         WAITING, ACCEPTED, INVALID, TAKEN
@@ -175,9 +175,9 @@ public class MatchRoom extends Thread {
     }
 
     private void parseInput(Object input) {
+        
         if (input instanceof MatchRoomListMessage) {
-            final HashMap<String, String> matchRoomList = ((MatchRoomListMessage) input)
-                    .getMatchRoomList();
+            final HashMap<String, String> matchRoomList = ((MatchRoomListMessage) input).getMatchRoomList();
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -188,14 +188,14 @@ public class MatchRoom extends Thread {
             NotificationMessage n = (NotificationMessage) input;
 
             if (n.getCode() != NotificationMessage.OPPONENTS_NAME) {
-                System.out.println("<< " + n.getCode());
+                System.out.print("<< " + n.getCode());
             }
 
             switch (n.getCode()) {
                 case NotificationMessage.GAME_TOKEN:
                     if (n.getText().length == 1) {
                         key = n.getText()[0];
-                        System.out.println(key);
+                        System.out.println(" " + key + " " + serverAddress);
                     }
                     break;
                 case NotificationMessage.OPPONENTS_NAME:
@@ -212,8 +212,7 @@ public class MatchRoom extends Thread {
                     setNameState(NameState.INVALID);
                     break;
                 case NotificationMessage.NEW_JOIN_GAME_REQUEST:
-                    final InviteReceivedPane dialog = new InviteReceivedPane(
-                            n.getText()[0], n.getText()[1], this);
+                    final InviteReceivedPane dialog = new InviteReceivedPane(n.getText()[0], n.getText()[1], this);
                     System.out.println(n.getText()[0] + " " + n.getText()[1]);
                     inviteDialogs.put(n.getText()[0], dialog);
                     EventQueue.invokeLater(new Runnable() {
@@ -264,8 +263,8 @@ public class MatchRoom extends Thread {
     }
 
     /**
-     * Reopens {@link view.MatchRoomView}, disposing of {@link view.ClientView},
-     * and stops {@link model.Client} from handling the input from the server.
+     * Reopens {@link view.MatchRoomView}, disposing of {@link view.ClientView}, and
+     * stops {@link model.Client} from handling the input from the server.
      */
     public void reopen() {
         if (clientModel != null) {
