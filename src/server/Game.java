@@ -154,9 +154,6 @@ public class Game {
                 return;
             }
 
-            System.out.println(">> " + NotificationMessage.SHOT + " "
-                    + opponent.socket.getRemoteSocketAddress().toString() + " " + x + " " + y);
-
             boolean hit = square.guess();
             Ship ship = square.getShip();
             MoveResponseMessage response;
@@ -168,6 +165,9 @@ public class Game {
             player.writeObject(response);
             response.setOwnBoard(true);
             opponent.writeObject(response);
+
+            System.out.println(">> " + NotificationMessage.SHOT + " "
+                    + opponent.socket.getRemoteSocketAddress().toString() + " " + x + " " + y);
 
             if (opponent.getBoard().gameOver()) {
                 System.out.println(">> " + NotificationMessage.GAME_WIN + " "
