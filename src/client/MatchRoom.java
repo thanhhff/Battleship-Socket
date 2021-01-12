@@ -109,11 +109,12 @@ public class MatchRoom extends Thread {
      * a {@link view.InviteSentPane} informing the player that they have sent
      * a request and who to, and allows them to cancel it.
      *
-     * @param key key of invited player
+     * @param key  key of invited player
      * @param name name of invited player
      */
     public void sendJoinFriend(String key, final String name) {
         try {
+            System.out.println(">> " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " " + key + " " + name);
             out.writeObject(new String[]{"join", "join", key});
             out.flush();
             EventQueue.invokeLater(new Runnable() {
@@ -135,6 +136,7 @@ public class MatchRoom extends Thread {
      */
     public void sendName(String name) {
         this.nameState = NameState.WAITING;
+        System.out.println(">> " + NotificationMessage.NAME_REQUEST + " " + name);
         sendStringArray(new String[]{"name", name});
     }
 
@@ -184,13 +186,16 @@ public class MatchRoom extends Thread {
             });
         } else if (input instanceof NotificationMessage) {
             NotificationMessage n = (NotificationMessage) input;
-            System.out.println(n.getCode());
+
+            if (n.getCode() != NotificationMessage.OPPONENTS_NAME) {
+                System.out.println("<< " + n.getCode());
+            }
 
             switch (n.getCode()) {
                 case NotificationMessage.GAME_TOKEN:
                     if (n.getText().length == 1) {
                         key = n.getText()[0];
-                        System.out.println("Game_token: " + key);
+                        System.out.println(key);
                     }
                     break;
                 case NotificationMessage.OPPONENTS_NAME:
@@ -209,7 +214,7 @@ public class MatchRoom extends Thread {
                 case NotificationMessage.NEW_JOIN_GAME_REQUEST:
                     final InviteReceivedPane dialog = new InviteReceivedPane(
                             n.getText()[0], n.getText()[1], this);
-                    System.out.println("request from " + n.getText()[0] + " " + n.getText()[1]);
+                    System.out.println(n.getText()[0] + " " + n.getText()[1]);
                     inviteDialogs.put(n.getText()[0], dialog);
                     EventQueue.invokeLater(new Runnable() {
                         @Override
@@ -219,16 +224,13 @@ public class MatchRoom extends Thread {
                     });
                     break;
                 case NotificationMessage.JOIN_GAME_REQUEST_REJECTED:
-                    System.out.println("Join request rejected");
                     if (inviteSentPane != null) {
                         inviteSentPane.dispose();
                     }
                     break;
                 case NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED:
-                    System.out.println("Join request accepted");
                     break;
                 case NotificationMessage.JOIN_GAME_REQUEST_CANCELLED:
-                    System.out.println("cancelled");
                     InviteReceivedPane pane = inviteDialogs.get(n.getText()[0]);
                     if (pane != null) {
                         pane.dispose();

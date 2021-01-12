@@ -88,7 +88,9 @@ public class Client extends Thread {
     public void parseInput(Object input) {
         if (input instanceof NotificationMessage) {
             NotificationMessage n = (NotificationMessage) input;
-            System.out.println(n.getCode());
+
+            int code = n.getCode();
+            System.out.println("<< " + n.getCode());
 
             switch (n.getCode()) {
             case NotificationMessage.OPPONENTS_NAME:
@@ -98,7 +100,7 @@ public class Client extends Thread {
                     opponentName = n.getText()[0];
                     view.setTitle("Playing Battleships against " +
                             opponentName);
-                    System.out.println("Opponents name: " + opponentName);
+                    System.out.println(opponentName);
                 }
                 break;
             case NotificationMessage.BOARD_ACCEPTED:
@@ -203,6 +205,8 @@ public class Client extends Thread {
      * @throws IOException
      */
     public void sendBoard(Board board) throws IOException {
+        System.out.println(">> " + NotificationMessage.SEND_BOARD);
+        board.printBoard(true);
         out.reset();
         out.writeObject(board);
         out.flush();
@@ -238,6 +242,7 @@ public class Client extends Thread {
      * @throws IOException
      */
     public void sendMove(int x, int y) throws IOException {
+        System.out.println(">> " + NotificationMessage.SHOT + " " + x + " " + y);
         out.writeObject(new MoveMessage(x, y));
         out.flush();
     }
