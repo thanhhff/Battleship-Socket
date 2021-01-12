@@ -147,7 +147,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
             if (result) {
                 selectedShipView.setX(hovered.getX());
                 selectedShipView.setY(hovered.getY());
-                System.out.println();
+//                System.out.println();
 
                 shouldReset = false;
             }
