@@ -216,7 +216,7 @@ public class MatchRoom extends Thread {
                     break;
                 case NotificationMessage.NEW_JOIN_GAME_REQUEST:
                     final InviteReceivedPane dialog = new InviteReceivedPane(n.getText()[0], n.getText()[1], this);
-                    System.out.println(" "+ n.getText()[0] + " " + n.getText()[1]);
+                    System.out.println(" "+ n.getText()[0] );
                     inviteDialogs.put(n.getText()[0], dialog);
                     EventQueue.invokeLater(new Runnable() {
                         @Override
