@@ -182,6 +182,9 @@ public class Client extends Thread {
         } else if (input instanceof MoveResponseMessage) {
             MoveResponseMessage move = (MoveResponseMessage) input;
             if (move.isOwnBoard()) {
+                int x = move.getX();
+                int y = move.getY();
+                System.out.println(NotificationMessage.SHOT + " " + x + " " + y);
                 ownBoard.applyMove(move);
             } else {
                 opponentBoard.applyMove(move);
