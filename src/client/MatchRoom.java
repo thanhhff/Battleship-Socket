@@ -61,7 +61,7 @@ public class MatchRoom extends Thread {
                 out.flush();
 
                 serverAddress = socket.getRemoteSocketAddress().toString();
-                //System.out.print(serverAddress + ": ");
+                System.out.println(serverAddress);
                 connected = true;
             } catch (FileNotFoundException e) {
                 matchRoomView.showConfigFileError();
@@ -137,7 +137,7 @@ public class MatchRoom extends Thread {
      */
     public void sendName(String name) {
         this.nameState = NameState.WAITING;
-        System.out.println(">> " + NotificationMessage.NAME_REQUEST + " " +serverAddress +  " " + name);
+        System.out.println(">> " + NotificationMessage.NAME_REQUEST + " " + name);
         sendStringArray(new String[] { "name", name });
     }
 
@@ -195,7 +195,7 @@ public class MatchRoom extends Thread {
                 case NotificationMessage.GAME_TOKEN:
                     if (n.getText().length == 1) {
                         key = n.getText()[0];
-                        System.out.println(" " + key + " " + serverAddress);
+                        System.out.println(" " + key );
                     }
                     break;
                 case NotificationMessage.OPPONENTS_NAME:
@@ -204,16 +204,19 @@ public class MatchRoom extends Thread {
                     break;
                 case NotificationMessage.NAME_ACCEPTED:
                     setNameState(NameState.ACCEPTED);
+                    System.out.println("");
                     break;
                 case NotificationMessage.NAME_TAKEN:
                     setNameState(NameState.TAKEN);
+                    System.out.println("");
                     break;
                 case NotificationMessage.INVALID_NAME:
                     setNameState(NameState.INVALID);
+                    System.out.println("");
                     break;
                 case NotificationMessage.NEW_JOIN_GAME_REQUEST:
                     final InviteReceivedPane dialog = new InviteReceivedPane(n.getText()[0], n.getText()[1], this);
-                    System.out.println(n.getText()[0] + " " + n.getText()[1]);
+                    System.out.println(" "+ n.getText()[0] + " " + n.getText()[1]);
                     inviteDialogs.put(n.getText()[0], dialog);
                     EventQueue.invokeLater(new Runnable() {
                         @Override
@@ -226,8 +229,10 @@ public class MatchRoom extends Thread {
                     if (inviteSentPane != null) {
                         inviteSentPane.dispose();
                     }
+                    System.out.println("");
                     break;
                 case NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED:
+                    System.out.println("");
                     break;
                 case NotificationMessage.JOIN_GAME_REQUEST_CANCELLED:
                     InviteReceivedPane pane = inviteDialogs.get(n.getText()[0]);
