@@ -98,6 +98,7 @@ public class Client extends Thread {
                     opponentName = n.getText()[0];
                     view.setTitle("Playing Battleships against " +
                             opponentName);
+                    System.out.println("Opponents name: " + opponentName);
                 }
                 break;
             case NotificationMessage.BOARD_ACCEPTED:

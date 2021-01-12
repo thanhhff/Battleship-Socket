@@ -190,6 +190,7 @@ public class MatchRoom extends Thread {
                 case NotificationMessage.GAME_TOKEN:
                     if (n.getText().length == 1) {
                         key = n.getText()[0];
+                        System.out.println("Game_token: " + key);
                     }
                     break;
                 case NotificationMessage.OPPONENTS_NAME:
