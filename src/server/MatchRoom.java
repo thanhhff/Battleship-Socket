@@ -43,29 +43,25 @@ public class MatchRoom {
             player.leaveGame();
             if (args.length == 3) {
                 player.leaveGame();
-                System.out.println ("<< " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " "
-                        + player.socket.getRemoteSocketAddress().toString() + " " + args[2]);
+                System.out.println ("<< " + player.socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.NEW_JOIN_GAME_REQUEST  + " " + args[2]);
                 joinRequest(player, args[2]);
             }
             break;
         case "accept":
             player.leaveGame();
             if (args.length == 3) {
-                System.out.println ("<< " + NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED + " "
-                        + player.socket.getRemoteSocketAddress().toString() + " " + args[2]);
+                System.out.println ("<< " + player.socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.JOIN_GAME_REQUEST_ACCEPTED + " " + args[2]);
                 acceptRequest(player, args[2]);
             }
             break;
         case "reject":
             if (args.length == 3) {
-                System.out.println ("<< " + NotificationMessage.JOIN_GAME_REQUEST_REJECTED + " "
-                        + player.socket.getRemoteSocketAddress().toString() + " " + args[2]);
+                System.out.println ("<< " + player.socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.JOIN_GAME_REQUEST_REJECTED + " " + args[2]);
                 rejectRequest(player, args[2]);
             }
         case "cancel":
             if (args.length == 2) {
-                System.out.println ("<< " + NotificationMessage.JOIN_GAME_REQUEST_CANCELLED + " "
-                        + player.socket.getRemoteSocketAddress().toString());
+                System.out.println ("<< " + player.socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.JOIN_GAME_REQUEST_CANCELLED );
                 cancelRequest(player);
             }
         }
@@ -160,8 +156,7 @@ public class MatchRoom {
             opponent.writeNotification(
                     NotificationMessage.JOIN_GAME_REQUEST_CANCELLED,
                     player.getOwnKey());
-            System.out.println (">> " + NotificationMessage.JOIN_GAME_REQUEST_CANCELLED + " "
-                    + opponent.socket.getRemoteSocketAddress().toString());
+            System.out.println (">> " + opponent.socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.JOIN_GAME_REQUEST_CANCELLED );
         }
     }
 
