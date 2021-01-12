@@ -90,6 +90,10 @@ public class Player extends Thread {
                     }
                 } else if (input instanceof Board) {
                     Board board = (Board) input;
+
+                    // Print Board nhân được từ Client
+                    board.printBoard(true);
+
                     if (Board.isValid(board) && game != null) {
                         System.out.println (NotificationMessage.BOARD_ACCEPTED + " "
                                 + socket.getRemoteSocketAddress().toString() );
