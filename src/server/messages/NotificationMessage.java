@@ -37,7 +37,8 @@ public class NotificationMessage implements Serializable {
     public final static int INVALID_BOARD = 504;
     public final static int NOT_IN_GAME = 505;
 
-    public final static int BOARD_ACCEPTED = 601;
+    public final static int SEND_BOARD = 601;
+    public final static int BOARD_ACCEPTED = 602;
 
     public final static int NEW_JOIN_GAME_REQUEST = 701;
     public final static int JOIN_GAME_REQUEST_REJECTED = 702;

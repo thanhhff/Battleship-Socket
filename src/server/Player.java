@@ -92,6 +92,7 @@ public class Player extends Thread {
                     Board board = (Board) input;
 
                     // Print Board nhân được từ Client
+                    System.out.println (NotificationMessage.SEND_BOARD + " " + socket.getRemoteSocketAddress().toString() );
                     board.printBoard(true);
 
                     if (Board.isValid(board) && game != null) {

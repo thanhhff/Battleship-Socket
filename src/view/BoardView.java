@@ -156,7 +156,7 @@ public class BoardView extends JPanel implements PropertyChangeListener {
             selectedShipView.resetPosition();
         }
         updateRotateButtonState();
-        this.model.printBoard(true);
+//        this.model.printBoard(true);
     }
 
     private void updateRotateButtonState() {
