@@ -115,7 +115,7 @@ public class MatchRoom extends Thread {
      */
     public void sendJoinFriend(String key, final String name) {
         try {
-            System.out.println(">> " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " " + key + " " + name);
+            System.out.println(">> " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " " + key);
             out.writeObject(new String[] { "join", "join", key });
             out.flush();
             EventQueue.invokeLater(new Runnable() {

@@ -219,7 +219,7 @@ public class Player extends Thread {
     public synchronized void sendRequest(Player requester) {
         requestList.put(requester.getOwnKey(), requester);
         requester.requestedGameKey = this.ownKey;
-        System.out.println (">> " + socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " " + this.ownKey);
+        System.out.println (">> " + socket.getRemoteSocketAddress().toString() + " " + NotificationMessage.NEW_JOIN_GAME_REQUEST + " " + requester.ownKey);
         writeNotification(NotificationMessage.NEW_JOIN_GAME_REQUEST,
                 requester.getOwnKey(), requester.getPlayerName());
     }
