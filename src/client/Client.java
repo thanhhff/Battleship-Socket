@@ -90,7 +90,10 @@ public class Client extends Thread {
             NotificationMessage n = (NotificationMessage) input;
 
             int code = n.getCode();
-            System.out.println("<< " + n.getCode());
+
+            if (code != NotificationMessage.OPPONENTS_NAME){
+                System.out.println("<< " + n.getCode());
+            }
 
             switch (n.getCode()) {
             case NotificationMessage.OPPONENTS_NAME:
@@ -100,7 +103,7 @@ public class Client extends Thread {
                     opponentName = n.getText()[0];
                     view.setTitle("Playing Battleships against " +
                             opponentName);
-                    System.out.println(opponentName);
+                    System.out.println("<< " + n.getCode() + " " + opponentName);
                 }
                 break;
             case NotificationMessage.BOARD_ACCEPTED:
